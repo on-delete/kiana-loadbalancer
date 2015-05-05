@@ -27,7 +27,20 @@ public class MacCountService {
     public Response getMacCountOneAP(OneAPRequest oneAPRequest){
         return Response.ok().entity("<html><body>Hallo</body></html>").build();
 
+        /*final Future<String> entityFuture = target().path("http://example.com/resource/")
+                .request().async().get(new InvocationCallback<String>() {
+                    @Override
+                    public void completed(String response) {
+                        System.out.println("Response entity '" + response + "' received.");
+                    }
 
+                    @Override
+                    public void failed(Throwable throwable) {
+                        System.out.println("Invocation failed.");
+                        throwable.printStackTrace();
+                    }
+                });
+        System.out.println(entityFuture.get());*/
     }
 
     /**
