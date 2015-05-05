@@ -11,5 +11,12 @@
 
     <artifactId>compute-node</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.hszg</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>
