@@ -2,13 +2,14 @@ package de.hszg.service;
 
 import de.hszg.model.heartbeat.Heartbeat;
 import de.hszg.service.heartbeat.SharedMemory;
+import org.glassfish.jersey.process.internal.RequestScoped;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.xml.ws.Response;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by Andre on 03.05.2015.
@@ -18,10 +19,11 @@ import javax.xml.ws.Response;
  */
 
 @Path("/HeartbeatService")
+@RequestScoped
 public class GCEHeartbeatService {
 
     @Inject
-    SharedMemory sharedMemory;
+    private SharedMemory sharedMemory;
 
     /**
      * All compute nodes can post their heartbeat to this function to register them to the loadbalancer.
@@ -32,7 +34,9 @@ public class GCEHeartbeatService {
     @Path("/postHeartbeat")
     @Consumes("application/json")
     public Response postHeartbeat(Heartbeat heartbeat){
-        return null;
+        sharedMemory.storeToMemory(heartbeat);
+
+        return Response.ok().build();
     }
 
     /**
@@ -41,9 +45,11 @@ public class GCEHeartbeatService {
      * @return
      */
     @PUT
-    @Path("/updateHeartbet")
+    @Path("/updateHeartbeat")
     @Consumes("application/json")
     public Response updateHeartbeat(Heartbeat heartbeat){
-        return null;
+        sharedMemory.updateMemory(heartbeat);
+
+        return Response.ok().build();
     }
 }

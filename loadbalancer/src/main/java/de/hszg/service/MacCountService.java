@@ -2,11 +2,21 @@ package de.hszg.service;
 
 import de.hszg.model.MultipleAPRequest;
 import de.hszg.model.OneAPRequest;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 
+
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by Andre on 22.04.2015.
@@ -24,23 +34,17 @@ public class MacCountService {
     @POST
     @Path("/getMacCountOneAP")
     @Consumes("application/json")
-    public Response getMacCountOneAP(OneAPRequest oneAPRequest){
+    public Response getMacCountOneAP(@Context HttpServletRequest request, OneAPRequest oneAPRequest){
+        System.out.println(request.getRequestURI());
+
+        /*try {
+            return Response.seeOther(new URI("http://www.google.de")).build();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }*/
+
         return Response.ok().entity("<html><body>Hallo</body></html>").build();
-
-        /*final Future<String> entityFuture = target().path("http://example.com/resource/")
-                .request().async().get(new InvocationCallback<String>() {
-                    @Override
-                    public void completed(String response) {
-                        System.out.println("Response entity '" + response + "' received.");
-                    }
-
-                    @Override
-                    public void failed(Throwable throwable) {
-                        System.out.println("Invocation failed.");
-                        throwable.printStackTrace();
-                    }
-                });
-        System.out.println(entityFuture.get());*/
     }
 
     /**

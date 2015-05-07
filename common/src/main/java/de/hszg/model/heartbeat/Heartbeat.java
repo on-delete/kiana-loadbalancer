@@ -11,6 +11,8 @@ public class Heartbeat {
     private double load;
     private int numberJobs;
 
+    public Heartbeat(){}
+
     public Heartbeat(String ipAddress, double load, int numberJobs) {
         this.ipAddress = ipAddress;
         this.load = load;
