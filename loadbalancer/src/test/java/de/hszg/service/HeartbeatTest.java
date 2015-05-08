@@ -19,8 +19,7 @@ public class HeartbeatTest {
     public static void main(String[] args) {
         ExecutorService executor = Executors.newFixedThreadPool(100);
 
-        for(int i = 1; i<=10; i++){
-            System.out.println("Test: " + i);
+        for(int i = 1; i<=50; i++){
             Runnable worker = new HttpThread(i);
             executor.execute(worker);
         }
@@ -42,7 +41,7 @@ public class HeartbeatTest {
             CloseableHttpResponse response = null;
             try {
                 response = httpclient.execute(httpPost);
-                System.out.println(response.getStatusLine());
+                //System.out.println(response.getStatusLine());
                 HttpEntity entity2 = response.getEntity();
                 response.close();
                 httpclient.close();
@@ -66,7 +65,7 @@ public class HeartbeatTest {
             CloseableHttpResponse response = null;
             try {
                 response = httpclient.execute(httpPut);
-                System.out.println(response.getStatusLine());
+                //System.out.println(response.getStatusLine());
                 HttpEntity entity2 = response.getEntity();
                 response.close();
                 httpclient.close();
@@ -99,7 +98,7 @@ public class HeartbeatTest {
 
                 updateHeartbeat(ipAddress);
 
-                i++;
+                //i++;
             }
         }
     }

@@ -1,12 +1,13 @@
 package de.hszg.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Andre on 23.04.2015.
  */
-public class MultipleAPRequest {
+public class MultipleAPRequest implements Serializable{
 
     private List<AccessPoint> accessPointList;
     private Date startDate;

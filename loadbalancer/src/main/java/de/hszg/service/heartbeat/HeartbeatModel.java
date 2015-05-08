@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by Andre on 07.05.2015.
  */
-public class HeartbeatModel {
+public class HeartbeatModel implements Comparable<HeartbeatModel>{
 
     private String ipAddress;
     private double load;
@@ -57,5 +57,18 @@ public class HeartbeatModel {
                 ", load=" + load +
                 ", numberJobs=" + numberJobs +
                 ", systemTime=" + systemTime;
+    }
+
+    @Override
+    public int compareTo(HeartbeatModel h) {
+        int leastLoad = Double.compare(load, h.load);
+        if(leastLoad > 0){
+            return 1;
+        }
+        else if(leastLoad < 0){
+            return -1;
+        }
+        else
+            return 0;
     }
 }

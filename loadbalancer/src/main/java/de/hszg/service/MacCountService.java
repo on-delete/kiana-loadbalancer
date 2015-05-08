@@ -1,22 +1,16 @@
 package de.hszg.service;
 
 import de.hszg.model.MultipleAPRequest;
-import de.hszg.model.OneAPRequest;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpRequest;
+import de.hszg.service.heartbeat.SharedMemory;
+import de.hszg.service.util.Schedule;
 
 
-import javax.servlet.http.HttpServletRequest;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Created by Andre on 22.04.2015.
@@ -26,26 +20,8 @@ import java.net.URISyntaxException;
 @Path("/MacCountService")
 public class MacCountService {
 
-    /**
-     * This function is to receive the request to count all mac addresses for one AccessPoint and forward it to the "start" compute node.
-     * @param oneAPRequest DTO for the request. Is marshalled automatically.
-     * @return
-     */
-    @POST
-    @Path("/getMacCountOneAP")
-    @Consumes("application/json")
-    public Response getMacCountOneAP(@Context HttpServletRequest request, OneAPRequest oneAPRequest){
-        System.out.println(request.getRequestURI());
-
-        /*try {
-            return Response.seeOther(new URI("http://www.google.de")).build();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return Response.serverError().build();
-        }*/
-
-        return Response.ok().entity("<html><body>Hallo</body></html>").build();
-    }
+    @Inject
+    private SharedMemory sharedMemory;
 
     /**
      * This function is to receive the request to count all mac addresses for multiple AccessPoint and forward it to the "start" compute node.
@@ -53,9 +29,24 @@ public class MacCountService {
      * @return
      */
     @POST
-    @Path("/getMacCountMultipleAP")
+    @Path("/getMacCountForAP")
     @Consumes("application/json")
-    public Response getMacCountMultipleAP(MultipleAPRequest multipleAPRequest){
-        return null;
+    public Response getMacCountForAP(MultipleAPRequest multipleAPRequest){
+        Schedule schedule = new Schedule(sharedMemory);
+        try{
+            String ipAddress = schedule.getGCEWithLeastLoad();
+
+            /*Not fully implemented*/
+            //schedule.startJobComputing(multipleAPRequest, ipAddress);
+
+            return Response.ok().entity("test: " + ipAddress).build();
+        }
+        catch (IndexOutOfBoundsException /*|IOException*/ e){
+            /*TODO
+            In dem Fall wurde keine GCE aufgezeichnet, starten einer GCE?
+             */
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
     }
 }
