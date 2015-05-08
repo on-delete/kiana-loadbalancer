@@ -1,5 +1,6 @@
 package de.hszg.service;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import de.hszg.service.heartbeat.SharedMemory;
 import de.hszg.service.heartbeat.SharedMemoryFeature;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -17,8 +18,11 @@ public class Application extends javax.ws.rs.core.Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
+        classes.add(MacCountService.class);
+        classes.add(GCESchedulingService.class);
         classes.add(GCEHeartbeatService.class);
         classes.add(SharedMemoryFeature.class);
+        classes.add(JacksonJsonProvider.class);
         return classes;
     }
 }

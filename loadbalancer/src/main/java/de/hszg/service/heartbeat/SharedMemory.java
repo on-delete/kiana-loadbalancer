@@ -24,33 +24,20 @@ public class SharedMemory {
         memory = new HashMap<String, HeartbeatModel>();
     }
 
-    /*public static SharedMemory current(){
-        if(sharedMemory == null){
-            sharedMemory = new SharedMemory();
-        }
-        return sharedMemory;
-    }*/
-
     public void storeToMemory(Heartbeat heartbeat){
         long systemTime = System.currentTimeMillis();
         HeartbeatModel heartbeatModel = new HeartbeatModel(heartbeat.getIpAddress(), heartbeat.getLoad(), heartbeat.getNumberJobs(), systemTime);
 
-        System.out.println("Speichern des Heartbeats: " + heartbeatModel);
         memory.put(heartbeat.getIpAddress(), heartbeatModel);
-
-        System.out.println(memory.size());
     }
 
     public void updateMemory(Heartbeat heartbeat){
         long systemTime = System.currentTimeMillis();
         HeartbeatModel heartbeatModel = new HeartbeatModel(heartbeat.getIpAddress(), heartbeat.getLoad(), heartbeat.getNumberJobs(), systemTime);
 
-        System.out.println("Update des Heartbeats: " + heartbeatModel);
         if(memory.containsKey(heartbeat.getIpAddress())) {
             memory.replace(heartbeat.getIpAddress(), heartbeatModel);
         }
-
-        System.out.println(memory.size());
     }
 
     public Collection<HeartbeatModel> getAllHeartbeats(){
