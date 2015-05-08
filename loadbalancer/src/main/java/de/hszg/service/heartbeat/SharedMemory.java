@@ -2,7 +2,6 @@ package de.hszg.service.heartbeat;
 
 import de.hszg.model.heartbeat.Heartbeat;
 
-import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.locks.Lock;
@@ -13,25 +12,24 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * This class is to hold all GCE that are registered to the loadbalancer.
  */
-@Singleton
 public class SharedMemory {
 
-    private static SharedMemory sharedMemory = null;
+    private SharedMemory sharedMemory = null;
     private HashMap<String, HeartbeatModel> memory = null;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock  = lock.readLock();
     private final Lock writeLock = lock.writeLock();
 
-    private SharedMemory(){
+    public SharedMemory(){
         memory = new HashMap<String, HeartbeatModel>();
     }
 
-    public static SharedMemory current(){
+    /*public static SharedMemory current(){
         if(sharedMemory == null){
             sharedMemory = new SharedMemory();
         }
         return sharedMemory;
-    }
+    }*/
 
     public void storeToMemory(Heartbeat heartbeat){
         long systemTime = System.currentTimeMillis();
