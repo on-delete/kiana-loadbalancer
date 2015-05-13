@@ -24,12 +24,13 @@ public class SharedMemory {
         memory = new HashMap<String, HeartbeatModel>();
     }
 
-    public void storeToMemory(Heartbeat heartbeat){
+    //Obsolet
+    /*public void storeToMemory(Heartbeat heartbeat){
         long systemTime = System.currentTimeMillis();
         HeartbeatModel heartbeatModel = new HeartbeatModel(heartbeat.getIpAddress(), heartbeat.getLoad(), heartbeat.getNumberJobs(), systemTime);
 
         memory.put(heartbeat.getIpAddress(), heartbeatModel);
-    }
+    }*/
 
     public void updateMemory(Heartbeat heartbeat){
         long systemTime = System.currentTimeMillis();
@@ -37,6 +38,9 @@ public class SharedMemory {
 
         if(memory.containsKey(heartbeat.getIpAddress())) {
             memory.replace(heartbeat.getIpAddress(), heartbeatModel);
+        }
+        else{
+            memory.put(heartbeat.getIpAddress(), heartbeatModel);
         }
     }
 

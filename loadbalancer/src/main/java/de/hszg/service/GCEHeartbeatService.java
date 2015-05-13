@@ -28,7 +28,8 @@ public class GCEHeartbeatService {
      * @param heartbeat
      * @return
      */
-    @POST
+    //Obsolet
+    /*@POST
     @Path("/postHeartbeat")
     @Consumes("application/json")
     public Response postHeartbeat(Heartbeat heartbeat){
@@ -37,7 +38,7 @@ public class GCEHeartbeatService {
         log.info("registered " + heartbeat.getIpAddress());
 
         return Response.ok().build();
-    }
+    }*/
 
     /**
      * All compute nodes can put their heartbeat to this function to update the last known heartbeat.
