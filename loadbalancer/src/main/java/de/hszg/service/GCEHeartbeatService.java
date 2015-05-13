@@ -2,7 +2,7 @@ package de.hszg.service;
 
 import de.hszg.model.heartbeat.Heartbeat;
 import de.hszg.service.heartbeat.SharedMemory;
-import org.glassfish.jersey.process.internal.RequestScoped;
+import org.apache.logging.log4j.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response;
 @Path("/HeartbeatService")
 public class GCEHeartbeatService {
 
+    private static Logger log = LogManager.getRootLogger();
+
     @Inject
     private SharedMemory sharedMemory;
 
@@ -32,6 +34,8 @@ public class GCEHeartbeatService {
     public Response postHeartbeat(Heartbeat heartbeat){
         sharedMemory.storeToMemory(heartbeat);
 
+        log.info("registered " + heartbeat.getIpAddress());
+
         return Response.ok().build();
     }
 
@@ -45,6 +49,8 @@ public class GCEHeartbeatService {
     @Consumes("application/json")
     public Response updateHeartbeat(Heartbeat heartbeat){
         sharedMemory.updateMemory(heartbeat);
+
+        log.info("heartbeat " + heartbeat.getIpAddress());
 
         return Response.ok().build();
     }
