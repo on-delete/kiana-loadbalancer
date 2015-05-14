@@ -1,8 +1,8 @@
 package de.hszg.computenode;
 
+import com.sun.management.OperatingSystemMXBean;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -10,6 +10,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
+import java.lang.management.ManagementFactory;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 
 /**
  * Created by daniel on 13.05.15.
@@ -19,8 +23,10 @@ public class HeartbeatJob implements Job {
     @Override
     public void execute(final JobExecutionContext ctx) throws JobExecutionException {
 
+        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+
         try {
-            StringEntity input = new StringEntity("{\"ipAddress\":" + String.valueOf(123456789) + ",\"load\":" + 23.4 + ",\"numberJobs\":" + 3 + "}");
+            StringEntity input = new StringEntity("{\"ipAddress\":\"" + InetAddress.getLocalHost().getHostAddress() + "\",\"load\":" + osBean.getSystemCpuLoad() + ",\"numberJobs\":" + 3 + "}");
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();

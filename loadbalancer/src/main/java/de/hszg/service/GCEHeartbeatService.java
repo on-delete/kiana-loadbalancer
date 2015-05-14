@@ -51,7 +51,7 @@ public class GCEHeartbeatService {
     public Response updateHeartbeat(Heartbeat heartbeat){
         sharedMemory.updateMemory(heartbeat);
 
-        log.info("heartbeat " + heartbeat.getIpAddress());
+        log.info("heartbeat " + heartbeat.getIpAddress() + " " + heartbeat.getLoad());
 
         return Response.ok().build();
     }
