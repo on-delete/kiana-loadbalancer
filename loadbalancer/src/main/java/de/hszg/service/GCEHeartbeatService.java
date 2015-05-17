@@ -24,23 +24,6 @@ public class GCEHeartbeatService {
     private SharedMemory sharedMemory;
 
     /**
-     * All compute nodes can post their heartbeat to this function to register them to the loadbalancer.
-     * @param heartbeat
-     * @return
-     */
-    //Obsolet
-    /*@POST
-    @Path("/postHeartbeat")
-    @Consumes("application/json")
-    public Response postHeartbeat(Heartbeat heartbeat){
-        sharedMemory.storeToMemory(heartbeat);
-
-        log.info("registered " + heartbeat.getIpAddress());
-
-        return Response.ok().build();
-    }*/
-
-    /**
      * All compute nodes can put their heartbeat to this function to update the last known heartbeat.
      * @param heartbeat
      * @return

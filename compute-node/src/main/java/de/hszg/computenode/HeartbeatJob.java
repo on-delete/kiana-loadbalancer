@@ -20,6 +20,8 @@ import java.net.InetAddress;
  */
 public class HeartbeatJob implements Job {
 
+    private static String LOADBALANCER_IP = "104.197.107.205";
+
     @Override
     public void execute(final JobExecutionContext ctx) throws JobExecutionException {
 
@@ -30,7 +32,7 @@ public class HeartbeatJob implements Job {
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
-            HttpPut httpPut = new HttpPut("http://104.197.107.205:8080/HeartbeatService/updateHeartbeat");
+            HttpPut httpPut = new HttpPut("http://"+LOADBALANCER_IP+"/HeartbeatService/updateHeartbeat");
             httpPut.setEntity(input);
             CloseableHttpResponse response = null;
             try {

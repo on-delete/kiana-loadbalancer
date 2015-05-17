@@ -68,7 +68,18 @@ public class HeartbeatModel implements Comparable<HeartbeatModel>{
         else if(leastLoad < 0){
             return -1;
         }
-        else
-            return 0;
+        else{
+            int leastJobs = Integer.compare(numberJobs, h.numberJobs);
+
+            if(leastJobs > 0){
+                return 1;
+            }
+            else if(leastJobs < 0){
+                return -1;
+            }
+            else{
+                return 0;
+            }
+        }
     }
 }

@@ -14,7 +14,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class SharedMemory {
 
-    private SharedMemory sharedMemory = null;
     private HashMap<String, HeartbeatModel> memory = null;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock  = lock.readLock();
@@ -23,14 +22,6 @@ public class SharedMemory {
     public SharedMemory(){
         memory = new HashMap<String, HeartbeatModel>();
     }
-
-    //Obsolet
-    /*public void storeToMemory(Heartbeat heartbeat){
-        long systemTime = System.currentTimeMillis();
-        HeartbeatModel heartbeatModel = new HeartbeatModel(heartbeat.getIpAddress(), heartbeat.getLoad(), heartbeat.getNumberJobs(), systemTime);
-
-        memory.put(heartbeat.getIpAddress(), heartbeatModel);
-    }*/
 
     public void updateMemory(Heartbeat heartbeat){
         long systemTime = System.currentTimeMillis();
