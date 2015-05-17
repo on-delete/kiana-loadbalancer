@@ -2,11 +2,19 @@ package de.hszg.service;
 
 import de.hszg.model.scheduling.Job;
 import de.hszg.model.scheduling.JobList;
+import de.hszg.model.scheduling.JobScheduleModel;
+import de.hszg.service.heartbeat.SharedMemory;
+import de.hszg.service.util.Schedule;
 
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.xml.ws.Response;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
 
 /**
  * Created by Andre on 03.05.2015.
@@ -18,18 +26,8 @@ import javax.xml.ws.Response;
 @Path("/SchedulingService")
 public class GCESchedulingService {
 
-    /**
-     * Receives one job that has to be scheduled. Could also be used to reschedule the job, if one GCE died.
-     * Forward it to compute node that hast least load of all.
-     * @param job
-     * @return
-     */
-    @POST
-    @Path("/scheduleJob")
-    @Consumes("application/json")
-    public Response scheduleJob(Job job){
-        return null;
-    }
+    @Inject
+    private SharedMemory sharedMemory;
 
     /**
      * Receives a list of jobs that have to be scheduled.
@@ -40,7 +38,23 @@ public class GCESchedulingService {
     @POST
     @Path("/scheduleJobList")
     @Consumes("application/json")
-    public Response scheduleJob(JobList jobList){
-        return null;
+    public Response scheduleJob(JobList jobList, @Context HttpServletRequest httpRequest){
+        //try {
+            String requestIpAddress = Schedule.extractIpAddress(httpRequest.getRequestURL().toString());
+
+            for(Job job: jobList.getJobList()){
+                String ipAddress = sharedMemory.getGCEWithLeastLoad();
+
+                JobScheduleModel jobScheduleModel = new JobScheduleModel(job, requestIpAddress);
+
+                //not fully implemented
+                //Schedule.startJobComputing(jobScheduleModel, ipAddress);
+            }
+            return Response.ok().build();
+        /*}
+        catch (IOException e){
+            e.printStackTrace();
+            return Response.serverError().build();
+        }*/
     }
 }

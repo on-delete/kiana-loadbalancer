@@ -9,9 +9,31 @@ import java.util.List;
  */
 public class Job {
 
-    private List<String> macsToCompute;
+    private String macBucket;
 
-    public List<String> getMacsToCompute() {
-        return macsToCompute;
+    private String computeJobId;
+
+    private int jobId;
+
+    public String getMacBucket() {
+        return macBucket;
+    }
+
+    public void setMacBucket(String macBucket) { this.macBucket = macBucket; }
+
+    public String getComputeJobId() {
+        return computeJobId;
+    }
+
+    public void setComputeJobId(String computeJobId) {
+        this.computeJobId = computeJobId;
+    }
+
+    public int getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(int jobId) {
+        this.jobId = jobId;
     }
 }

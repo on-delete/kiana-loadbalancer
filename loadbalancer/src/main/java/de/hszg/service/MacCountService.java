@@ -32,12 +32,11 @@ public class MacCountService {
     @Path("/getMacCountForAP")
     @Consumes("application/json")
     public Response getMacCountForAP(MultipleAPRequest multipleAPRequest){
-        Schedule schedule = new Schedule(sharedMemory);
         try{
-            String ipAddress = schedule.getGCEWithLeastLoad();
+            String ipAddress = sharedMemory.getGCEWithLeastLoad();
 
             /*Not fully implemented*/
-            //schedule.startJobComputing(multipleAPRequest, ipAddress);
+            //Schedule.startJobComputing(multipleAPRequest, ipAddress);
 
             return Response.ok().entity("test: " + ipAddress).build();
         }

@@ -2,8 +2,7 @@ package de.hszg.service.heartbeat;
 
 import de.hszg.model.heartbeat.Heartbeat;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -47,5 +46,16 @@ public class SharedMemory {
         }
 
         return heartbeats;
+    }
+
+    public String getGCEWithLeastLoad() throws IndexOutOfBoundsException{
+        if(this.getAllHeartbeats().size()>0){
+            List<HeartbeatModel> allHeartbeats = new ArrayList<>(this.getAllHeartbeats());
+            Collections.sort(allHeartbeats);
+            return allHeartbeats.get(0).getIpAddress();
+        }
+        else{
+            throw new IndexOutOfBoundsException();
+        }
     }
 }
