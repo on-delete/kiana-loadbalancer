@@ -20,7 +20,7 @@ import java.net.InetAddress;
  */
 public class HeartbeatJob implements Job {
 
-    private static String LOADBALANCER_IP = "104.197.107.205";
+    private static String LOADBALANCER_IP = "104.197.107.205:8080";
 
     @Override
     public void execute(final JobExecutionContext ctx) throws JobExecutionException {
