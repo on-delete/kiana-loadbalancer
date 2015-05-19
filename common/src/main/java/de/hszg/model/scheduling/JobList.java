@@ -1,5 +1,6 @@
 package de.hszg.model.scheduling;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  *
  * Model class with a list of all jobs that have to be scheduled.
  */
-public class JobList {
+public class JobList implements Serializable{
 
     private List<Job> jobList;
 

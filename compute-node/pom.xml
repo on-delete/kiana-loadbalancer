@@ -52,6 +52,10 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.7</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
