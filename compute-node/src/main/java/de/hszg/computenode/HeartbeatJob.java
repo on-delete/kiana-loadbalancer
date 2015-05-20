@@ -7,7 +7,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.logging.log4j.LogManager;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -15,8 +14,6 @@ import org.quartz.JobExecutionException;
 import java.lang.management.ManagementFactory;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 
 /**
  * Created by daniel on 13.05.15.
@@ -29,15 +26,9 @@ public class HeartbeatJob implements Job {
     public void execute(final JobExecutionContext ctx) throws JobExecutionException {
 
         OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-        InetAddress[] ias = null;
-        try {
-            ias = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
 
         try {
-            StringEntity input = new StringEntity("{\"ipAddress\":\"" + ias[1].getHostAddress() + "\",\"load\":" + osBean.getSystemCpuLoad() + ",\"numberJobs\":" + 3 + "}");
+            StringEntity input = new StringEntity("{\"ipAddress\":\"" + InetAddress.getLocalHost().getHostAddress() + "\",\"load\":" + osBean.getSystemCpuLoad() + ",\"numberJobs\":" + 3 + "}");
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
