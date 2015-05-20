@@ -12,6 +12,8 @@ import org.apache.http.entity.SerializableEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,14 +26,16 @@ import java.util.List;
  */
 public class Schedule {
 
+    private static Logger log = LogManager.getRootLogger();
+
     public static void startJobComputing(MultipleAPRequest multipleAPRequest, String ipAddress) throws IOException{
         try {
             SerializableEntity input = new SerializableEntity(multipleAPRequest, false);
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
-            /*TODO Adresse des Services vervollständigen!*/
-            HttpPost httpPost = new HttpPost("http://"+ ipAddress +"");
+            log.info("ipAdresse: " + ipAddress);
+            HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCESchedulingAggregationService/scheduleJob");
             httpPost.setEntity(input);
             CloseableHttpResponse response = null;
 
@@ -41,7 +45,7 @@ public class Schedule {
             httpclient.close();
         }
         catch (Exception e){
-            throw new IOException();
+            throw e;
         }
     }
 
