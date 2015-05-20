@@ -12,6 +12,11 @@ public class MultipleAPRequest implements Serializable{
     private List<AccessPoint> accessPointList;
     private Date startDate;
     private Date endDate;
+    private int gceCount;
+
+    public void setAccessPointList(List<AccessPoint> accessPointList) {
+        this.accessPointList = accessPointList;
+    }
 
     public List<AccessPoint> getAccessPointList(){
         return accessPointList;
@@ -31,5 +36,13 @@ public class MultipleAPRequest implements Serializable{
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public int getGceCount() {
+        return gceCount;
+    }
+
+    public void setGceCount(int gceCount) {
+        this.gceCount = gceCount;
     }
 }

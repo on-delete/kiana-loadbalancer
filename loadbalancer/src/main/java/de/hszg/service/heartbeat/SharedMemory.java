@@ -13,13 +13,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class SharedMemory {
 
-    private HashMap<String, HeartbeatModel> memory = null;
+    private Map<String, HeartbeatModel> memory = null;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock  = lock.readLock();
     private final Lock writeLock = lock.writeLock();
 
     public SharedMemory(){
-        memory = new HashMap<String, HeartbeatModel>();
+        memory = Collections.synchronizedMap(new HashMap<String, HeartbeatModel>());
     }
 
     public void updateMemory(Heartbeat heartbeat){

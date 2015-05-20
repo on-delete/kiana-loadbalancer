@@ -34,13 +34,13 @@ public class MacCountService {
     public Response getMacCountForAP(MultipleAPRequest multipleAPRequest){
         try{
             String ipAddress = sharedMemory.getGCEWithLeastLoad();
+            multipleAPRequest.setGceCount(sharedMemory.getAllHeartbeats().size());
 
-            /*Not fully implemented*/
-            //Schedule.startJobComputing(multipleAPRequest, ipAddress);
+            Schedule.startJobComputing(multipleAPRequest, ipAddress);
 
             return Response.ok().entity("test: " + ipAddress).build();
         }
-        catch (IndexOutOfBoundsException /*|IOException*/ e){
+        catch (IndexOutOfBoundsException |IOException e){
             /*TODO
             In dem Fall wurde keine GCE aufgezeichnet, starten einer GCE?
              */
