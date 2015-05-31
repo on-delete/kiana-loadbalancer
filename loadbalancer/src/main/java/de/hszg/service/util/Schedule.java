@@ -28,7 +28,7 @@ public class Schedule {
 
     private static Logger log = LogManager.getRootLogger();
 
-    public static void startJobComputing(MultipleAPRequest multipleAPRequest, String ipAddress) throws IOException{
+    public static void startAggregateJob(MultipleAPRequest multipleAPRequest, String ipAddress) throws IOException{
         try {
             SerializableEntity input = new SerializableEntity(multipleAPRequest, false);
             input.setContentType("application/json");
@@ -37,11 +37,7 @@ public class Schedule {
             log.info("ipAdresse: " + ipAddress);
             HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCESchedulingAggregationService/scheduleJob");
             httpPost.setEntity(input);
-            CloseableHttpResponse response = null;
-
-            response = httpclient.execute(httpPost);
-            HttpEntity entity = response.getEntity();
-            response.close();
+            httpclient.execute(httpPost);
             httpclient.close();
         }
         catch (Exception e){
@@ -58,11 +54,7 @@ public class Schedule {
             /*TODO Adresse des Services vervollständigen!*/
             HttpPost httpPost = new HttpPost("http://"+ ipAddress +"");
             httpPost.setEntity(input);
-            CloseableHttpResponse response = null;
-
-            response = httpclient.execute(httpPost);
-            HttpEntity entity = response.getEntity();
-            response.close();
+            httpclient.execute(httpPost);
             httpclient.close();
         }
         catch (Exception e){

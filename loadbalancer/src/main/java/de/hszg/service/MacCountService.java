@@ -36,7 +36,7 @@ public class MacCountService {
             String ipAddress = sharedMemory.getGCEWithLeastLoad();
             multipleAPRequest.setGceCount(sharedMemory.getAllHeartbeats().size());
 
-            Schedule.startJobComputing(multipleAPRequest, ipAddress);
+            Schedule.startAggregateJob(multipleAPRequest, ipAddress);
 
             return Response.ok().entity("test: " + ipAddress).build();
         }
