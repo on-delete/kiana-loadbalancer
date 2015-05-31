@@ -1,0 +1,7 @@
+\section{Einleitung}
+Geringe Antwortzeiten und eine hohe Verfügbarkeit spielen bei der Entwicklung von Webservices in der heutigen Zeit eine immer größere Rolle. Der Nutzer ist es gewohnt, nicht lange auf die Bestätigung seines Einkaufs auf diversen Shopping-Portalen zu warten. Sollte es doch einmal klemmen, ist Dieser schnell genervt und wechselt vielleicht zu einem Konkurrenten, wo es keine Verzögerungen gibt. Gerade wenn es sehr viele Anfragen zur gleichen Zeit auf einen Service gibt, kann es schnell zu Engpässen kommen. Daher müssen Mittel und Wege gefunden werden, wie man diese Engpässe beseitigen kann, um dem Nutzer ein schnelles und angenehmes Arbeiten mit dem Service zu ermöglichen, sodass dieser sich wohlfühlt und den Service gern wieder in Anspruch nimmt.
+\\
+\\
+Eine solche Möglichkeit besteht darin, eine lang andauernde Bearbeitung einer Anfrage auf mehrere Recheninstanzen zu verteilen. Dazu wird die Anfrage entgegen genommen, in einzelne Teilprobleme aufgespalten, bearbeitet und anschließend das vollständige Ergebnis wieder zurück gesendet. Um dies noch zu erweitern, können bevorzugt die Recheninstanzen verwendet werden, die zur Anfragezeit die geringste Belastung vorweisen. So kann verhindert werden, dass manche Instanzen überlastet sind, während die anderen keine Aufgabe haben. Diese Art der Lastverteilung wird von einem sogenannten "`Loadbalancer"' übernommen. Hierbei gibt es unterschiedliche Ansätze \cite{loadb1}\cite{loadb2} zur Umsetzung, die je nach Anwendungskontext ausgewählt werden müssen.
+
+\subsection{Problemstellung}
