@@ -1,6 +1,7 @@
 package de.hszg.service;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import de.hszg.service.heartbeat.GCEStatusJob;
 import de.hszg.service.heartbeat.SharedMemory;
 import de.hszg.service.heartbeat.SharedMemoryFeature;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -23,6 +24,7 @@ public class Application extends javax.ws.rs.core.Application {
         classes.add(GCEHeartbeatService.class);
         classes.add(SharedMemoryFeature.class);
         classes.add(JacksonJsonProvider.class);
+        classes.add(GCEStatusJob.class);
         return classes;
     }
 }
