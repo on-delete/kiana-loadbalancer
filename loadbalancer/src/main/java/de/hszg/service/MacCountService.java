@@ -1,6 +1,8 @@
 package de.hszg.service;
 
 import de.hszg.model.MultipleAPRequest;
+import de.hszg.model.scheduling.JobScheduleModel;
+import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
 import de.hszg.service.util.Schedule;
 
@@ -32,13 +34,22 @@ public class MacCountService {
     @Path("/getMacCountForAP")
     @Consumes("application/json")
     public Response getMacCountForAP(MultipleAPRequest multipleAPRequest){
+        boolean gceFound = false;
         try{
-            String ipAddress = sharedMemory.getGCEWithLeastLoad();
-            multipleAPRequest.setGceCount(sharedMemory.getAllHeartbeats().size());
+            while(!gceFound) {
+                HeartbeatModel heartbeat = sharedMemory.getGCEWithLeastLoad();
+                if (Schedule.checkGCEStatus(heartbeat)) {
+                    multipleAPRequest.setGceCount(sharedMemory.getAllHeartbeats().size());
 
-            Schedule.startAggregateJob(multipleAPRequest, ipAddress);
+                    Schedule.startAggregateJob(multipleAPRequest, heartbeat.getIpAddress());
+                    gceFound = true;
+                }
+                else{
+                    sharedMemory.deleteHeartbeat(heartbeat);
+                }
+            }
 
-            return Response.ok().entity("test: " + ipAddress).build();
+            return Response.ok().entity("test: ").build();
         }
         catch (IndexOutOfBoundsException |IOException e){
             /*TODO

@@ -48,14 +48,24 @@ public class SharedMemory {
         return heartbeats;
     }
 
-    public String getGCEWithLeastLoad() throws IndexOutOfBoundsException{
+    public HeartbeatModel getGCEWithLeastLoad() throws IndexOutOfBoundsException{
         if(this.getAllHeartbeats().size()>0){
             List<HeartbeatModel> allHeartbeats = new ArrayList<>(this.getAllHeartbeats());
             Collections.sort(allHeartbeats);
-            return allHeartbeats.get(0).getIpAddress();
+            return allHeartbeats.get(0);
         }
         else{
             throw new IndexOutOfBoundsException();
+        }
+    }
+
+    public void deleteHeartbeat(HeartbeatModel heartbeatModel){
+        writeLock.lock();
+        try{
+            memory.remove(heartbeatModel.getIpAddress());
+        }
+        finally {
+            writeLock.unlock();
         }
     }
 }
