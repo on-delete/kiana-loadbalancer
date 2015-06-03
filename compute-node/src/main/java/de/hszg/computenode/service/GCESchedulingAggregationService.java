@@ -46,7 +46,7 @@ public class GCESchedulingAggregationService {
 			input.setContentType("application/json");
 
 			CloseableHttpClient httpclient = HttpClients.createDefault();
-			HttpPost httpPost = new HttpPost("http://" + LOADBALANCER_IP + "/SchedulingService/scheduleJobList");
+			HttpPost httpPost = new HttpPost("http://" + LOADBALANCER_IP + "/loadbalancer/SchedulingService/scheduleJobList");
 			httpPost.setEntity(input);
 			CloseableHttpResponse response = null;
 
