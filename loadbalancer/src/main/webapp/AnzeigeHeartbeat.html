@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Anzeige aller Heartbeats</title>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script>
+        function aktualisieren(){
+            $.get("http://localhost:8080/HeartbeatService/getAllHeartbeats", function(data){
+                console.log(data);
+                buildTable(data);
+            });
+        }
+
+        function buildTable(data){
+            $("#heartbeatTable").empty();
+            $("#heartbeatTable").append("<tr><th align=\"left\">Ip-Adresse</th><th align=\"left\">Load</th><th align=\"left\">Job-Anzahl</th></tr>");
+
+            for(var i=0;i<data.length;i++){
+                var obj = data[i];
+                var ipAddress = obj["ipAddress"];
+                var load = obj["load"];
+                var numberJobs = obj["numberJobs"];
+                $("#heartbeatTable").append("<tr><td>"+ipAddress+"</td><td>"+load+"</td><td>"+numberJobs+"</td></tr>");
+            }
+        }
+    </script>
+</head>
+<body>
+<div>
+    <form>
+        <button type="button" style="margin-bottom: 10px" onclick="aktualisieren()">Aktualisieren</button>
+        <table id="heartbeatTable" style="width:50%;" border="1">
+            <tr><th align="left">Ip-Adresse</th><th align="left">Load</th><th align="left">Job-Anzahl</th></tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
