@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by Tobias on 19.05.2015.
+ * 
+ * Mocel class for the response of a computed job.
  */
 public class JobResponse implements Serializable {
 	
