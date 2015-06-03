@@ -6,7 +6,7 @@
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script>
         function aktualisieren(){
-            $.get("http://localhost:8080/HeartbeatService/getAllHeartbeats", function(data){
+            $.get("http://104.197.107.205:8080/loadbalancer/HeartbeatService/getAllHeartbeats", function(data){
                 console.log(data);
                 buildTable(data);
             });

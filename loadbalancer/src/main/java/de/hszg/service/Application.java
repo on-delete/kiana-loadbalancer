@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created by Andre on 05.05.2015.
  */
-@ApplicationPath("/")
+@ApplicationPath("/loadbalancer")
 public class Application extends javax.ws.rs.core.Application {
     @Override
     public Set<Class<?>> getClasses() {
