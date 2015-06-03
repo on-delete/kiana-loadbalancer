@@ -13,6 +13,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,7 +29,10 @@ import java.util.List;
  */
 public class GoogleComputeEngineClient {
     public static final int SUCCESS_CODE = 200;
-    public static final String IMAGE_NAME = "jetty-server";
+    public static final String IMAGE_NAME = "global/images/jetty-server";
+
+    private static Logger log = LogManager.getRootLogger();
+
     private static GoogleComputeEngineClient ourInstance = new GoogleComputeEngineClient();
 
     public static GoogleComputeEngineClient getInstance() {
@@ -54,7 +59,7 @@ public class GoogleComputeEngineClient {
             httpResponse.close();
             httpClient.close();
 
-            return rootNode.path("httpErrorStatusCode").asInt() == SUCCESS_CODE;
+            return !rootNode.has("httpErrorStatusCode");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -87,7 +92,7 @@ public class GoogleComputeEngineClient {
             httpResponse.close();
             httpClient.close();
 
-            return rootNode.path("httpErrorStatusCode").asInt() == SUCCESS_CODE;
+            return !rootNode.has("httpErrorStatusCode");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -120,7 +125,7 @@ public class GoogleComputeEngineClient {
             httpResponse.close();
             httpClient.close();
 
-            return rootNode.path("httpErrorStatusCode").asInt() == SUCCESS_CODE;
+            return !rootNode.has("httpErrorStatusCode");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -144,7 +149,8 @@ public class GoogleComputeEngineClient {
         CloseableHttpResponse httpResponse = null;
 
         try {
-            StringEntity request = new StringEntity("{\"name\": " + name + ", \"machineType\": \"zones/us-central1-a/machineTypes/f1-micro\", \"disks\": [\"initializeParams\": {\"sourceImage\": " + IMAGE_NAME + "}]");
+            StringEntity request = new StringEntity("{ \"name\": \"" + name + "\", \"zone\": \"https://www.googleapis.com/compute/v1/projects/test-cand2release/zones/us-central1-a\", \"machineType\": \"https://www.googleapis.com/compute/v1/projects/test-cand2release/zones/us-central1-a/machineTypes/f1-micro\", \"metadata\": { \"items\": [] }, \"tags\": { \"items\": [ \"http-server\" ] }, \"disks\": [ { \"type\": \"PERSISTENT\", \"boot\": true, \"mode\": \"READ_WRITE\", \"deviceName\": \"" + name + "\", \"autoDelete\": true, \"initializeParams\": { \"sourceImage\": \"https://www.googleapis.com/compute/v1/projects/test-cand2release/global/images/jetty-server\", \"diskType\": \"https://www.googleapis.com/compute/v1/projects/test-cand2release/zones/us-central1-a/diskTypes/pd-standard\" } } ], \"canIpForward\": false, \"networkInterfaces\": [ { \"network\": \"https://www.googleapis.com/compute/v1/projects/test-cand2release/global/networks/default\", \"accessConfigs\": [ { \"name\": \"External NAT\", \"type\": \"ONE_TO_ONE_NAT\" } ] } ], \"description\": \"\", \"scheduling\": { \"preemptible\": false, \"onHostMaintenance\": \"MIGRATE\", \"automaticRestart\": true }, \"serviceAccounts\": [ { \"email\": \"default\", \"scopes\": [ \"https://www.googleapis.com/auth/devstorage.read_only\", \"https://www.googleapis.com/auth/logging.write\" ] } ] }");
+
             request.setContentType("application/json");
 
             httpPost.setEntity(request);
@@ -160,7 +166,7 @@ public class GoogleComputeEngineClient {
             httpResponse.close();
             httpClient.close();
 
-            return rootNode.path("httpErrorStatusCode").asInt() == SUCCESS_CODE;
+            return !rootNode.has("httpErrorStatusCode");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -193,7 +199,7 @@ public class GoogleComputeEngineClient {
             httpResponse.close();
             httpClient.close();
 
-            return rootNode.path("httpErrorStatusCode").asInt() == SUCCESS_CODE;
+            return !rootNode.has("httpErrorStatusCode");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -232,7 +238,7 @@ public class GoogleComputeEngineClient {
                 GCE gce = new GCE();
 
                 gce.setName(instance.path("name").textValue());
-                gce.setIp(instance.path("networkInterfaces").path("networkIP").textValue());
+                gce.setIp(instance.path("networkInterfaces").elements().next().path("networkIP").textValue());
 
                 gces.add(gce);
             }
@@ -285,6 +291,8 @@ public class GoogleComputeEngineClient {
      * @return JSON object
      */
     private JsonNode readStringAsJson(String jsonString) {
+        log.info(jsonString);
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = null;
 
