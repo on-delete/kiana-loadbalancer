@@ -1,8 +1,7 @@
 package de.hszg.computenode.service;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.UUID;
 import java.util.Vector;
 
 import javax.ws.rs.Consumes;
@@ -29,9 +28,7 @@ import de.hszg.model.scheduling.JobList;
 @Path("/GCESchedulingAggregationService")
 public class GCESchedulingAggregationService {
 
-	 private static String LOADBALANCER_IP = "104.197.107.205:8080";
-	 private static HashMap<String, JobList> scheduleJobs = new HashMap<String, JobList>();
-	 private static HashMap<String, HashMap<Integer, Integer>> jobResponses = new HashMap<String, HashMap<Integer,Integer>>();
+	private static String LOADBALANCER_IP = "104.197.107.205:8080";
 	
 	@POST
     @Path("/scheduleJob")
@@ -39,18 +36,11 @@ public class GCESchedulingAggregationService {
 	@Produces("application/json")
 	public Response scheduleJob(MultipleAPRequest multipleAPRequest){
 		
-		
+		Vector<String> hashBuckets = createHashBuckets(multipleAPRequest.getGceCount());
 		//TODO Test für die Kommunikation zwischen Loadbalancer und Compute Node durch eigentliche Implementation ersetzen
-		JobList jobList = new JobList();
-		String computeJobId = ("test" + System.currentTimeMillis());
-		for(int i = 0; i < 4; i++){
-			Job job = new Job();
-			job.setJobId(i);
-			job.setComputeJobId(computeJobId);
-			jobList.getJobList().add(job);
-		}
-		scheduleJobs.put(computeJobId, jobList);
-		jobResponses.put(computeJobId, new HashMap<Integer, Integer>());
+		String computeJobId = UUID.randomUUID().toString();
+		JobList jobList = createJobList(hashBuckets, computeJobId);
+		ComputeJobList.getInstance().addJob(jobList, computeJobId);
         try {
 			SerializableEntity input = new SerializableEntity(jobList, false);
 			input.setContentType("application/json");
@@ -74,34 +64,65 @@ public class GCESchedulingAggregationService {
 			return Response.serverError().build();
 		}
 		
-        while(true){
-        	if(scheduleJobs.get(computeJobId).getJobList().size() > jobResponses.get(computeJobId).size()){
-        		try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}else{
-        		break;
-        	}
+        while(!ComputeJobList.getInstance().allJobResponsesRecieved(computeJobId)){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        int macCount = 0;
+        for(JobResponse jobResponse : ComputeJobList.getInstance().getJobResponseList(computeJobId).getJobResponseList()){
+        	macCount += jobResponse.getMacCount();
         }
         
-        scheduleJobs.remove(computeJobId);
-        jobResponses.remove(computeJobId);
+        ComputeJobList.getInstance().removeJob(computeJobId);
         
-		return Response.ok().build();
+		return Response.ok(macCount).build();
 	}
 	
 	@POST
 	@Path("/aggregateJob")
 	@Consumes("application/json")
 	public Response aggregateJob(JobResponse jobResponse){
-		if(jobResponses.containsKey(jobResponse.getComputeJobId())){
-			if(!(jobResponses.get(jobResponse.getComputeJobId()).containsKey(jobResponse.getJobId()))){
-				jobResponses.get(jobResponse.getComputeJobId()).put(jobResponse.getJobId(), jobResponse.getMacCount());
+		if(ComputeJobList.getInstance().jobExists(jobResponse.getComputeJobId())){
+			if(!ComputeJobList.getInstance().jobResponseAlreadyRecieved(jobResponse)){
+				ComputeJobList.getInstance().addJobResponse(jobResponse);
 			}
 		}
 		return Response.ok().build();
+	}
+	
+	private Vector<String> createHashBuckets(int nodeCount){
+		int jobCount = 0;
+		int bitCount = 0;
+		while(jobCount < nodeCount){
+			bitCount += 1;
+			jobCount = (int) Math.pow(2,bitCount);
+		}
+		Vector<String> hashBuckets = new Vector<String>();
+		for(int i = 0; i < jobCount; i++){
+			String bucket = Integer.toBinaryString(i);
+			while(bucket.length() < bitCount){
+				bucket = "0" + bucket;
+			}
+			hashBuckets.add(bucket);
+		}
+		return hashBuckets;
+	}
+	
+	private JobList createJobList(Vector<String> hashBuckets, String computeJobId){
+		JobList jobList = new JobList();
+		//String computeJobId = UUID.randomUUID().toString();
+		int hashBucketSize = hashBuckets.size();
+		for(int i = 0; i < hashBucketSize; i++){
+			Job job = new Job();
+			job.setJobId(i);
+			job.setComputeJobId(computeJobId);
+			job.setMacBucket(hashBuckets.get(i));
+			jobList.getJobList().add(job);
+		}
+		return jobList;
 	}
 }
