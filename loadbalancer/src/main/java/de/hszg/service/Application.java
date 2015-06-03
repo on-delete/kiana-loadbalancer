@@ -19,6 +19,7 @@ public class Application extends javax.ws.rs.core.Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(MacCountService.class);
+        classes.add(GCEComputeNodeManager.class);
         classes.add(GCESchedulingService.class);
         classes.add(GCEHeartbeatService.class);
         classes.add(SharedMemoryFeature.class);

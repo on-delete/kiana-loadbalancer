@@ -13,6 +13,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,6 +30,9 @@ import java.util.List;
 public class GoogleComputeEngineClient {
     public static final int SUCCESS_CODE = 200;
     public static final String IMAGE_NAME = "jetty-server";
+
+    private static Logger log = LogManager.getRootLogger();
+
     private static GoogleComputeEngineClient ourInstance = new GoogleComputeEngineClient();
 
     public static GoogleComputeEngineClient getInstance() {
@@ -144,7 +149,10 @@ public class GoogleComputeEngineClient {
         CloseableHttpResponse httpResponse = null;
 
         try {
-            StringEntity request = new StringEntity("{\"name\": " + name + ", \"machineType\": \"zones/us-central1-a/machineTypes/f1-micro\", \"disks\": [\"initializeParams\": {\"sourceImage\": " + IMAGE_NAME + "}]");
+            StringEntity request = new StringEntity("{\"name\": \"" + name + "\", \"machineType\": \"zones/us-central1-a/machineTypes/f1-micro\", \"disks\": [\"initializeParams\": {\"sourceImage\": \"" + IMAGE_NAME + "\"}]}");
+
+            log.info("{\"name\": \"" + name + "\", \"machineType\": \"zones/us-central1-a/machineTypes/f1-micro\", \"disks\": [\"initializeParams\": {\"sourceImage\": \"" + IMAGE_NAME + "\"}]}");
+
             request.setContentType("application/json");
 
             httpPost.setEntity(request);
@@ -232,7 +240,7 @@ public class GoogleComputeEngineClient {
                 GCE gce = new GCE();
 
                 gce.setName(instance.path("name").textValue());
-                gce.setIp(instance.path("networkInterfaces").path("networkIP").textValue());
+                gce.setIp(instance.path("networkInterfaces").elements().next().path("networkIP").textValue());
 
                 gces.add(gce);
             }
@@ -285,6 +293,8 @@ public class GoogleComputeEngineClient {
      * @return JSON object
      */
     private JsonNode readStringAsJson(String jsonString) {
+        log.info(jsonString);
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = null;
 
