@@ -35,13 +35,14 @@ public class MacCountService {
     @Consumes("application/json")
     public Response getMacCountForAP(MultipleAPRequest multipleAPRequest){
         boolean gceFound = false;
+        String response = "";
         try{
             while(!gceFound) {
                 HeartbeatModel heartbeat = sharedMemory.getGCEWithLeastLoad();
                 if (Schedule.checkGCEStatus(heartbeat)) {
                     multipleAPRequest.setGceCount(sharedMemory.getAllHeartbeats().size());
 
-                    Schedule.startAggregateJob(multipleAPRequest, heartbeat.getIpAddress());
+                    response = Schedule.startAggregateJob(multipleAPRequest, heartbeat.getIpAddress());
                     gceFound = true;
                 }
                 else{
@@ -49,7 +50,7 @@ public class MacCountService {
                 }
             }
 
-            return Response.ok().entity("test: ").build();
+            return Response.ok().entity(response).build();
         }
         catch (IndexOutOfBoundsException |IOException e){
             /*TODO

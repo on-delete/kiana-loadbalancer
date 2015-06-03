@@ -20,6 +20,7 @@ public class Application extends javax.ws.rs.core.Application {
         classes.add(GCEHeartbeatService.class);
         classes.add(SharedMemoryFeature.class);
         classes.add(JacksonJsonProvider.class);
+
         return classes;
     }
 }

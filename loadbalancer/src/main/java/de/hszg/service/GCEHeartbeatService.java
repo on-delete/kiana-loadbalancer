@@ -1,12 +1,16 @@
 package de.hszg.service;
 
 import de.hszg.model.heartbeat.Heartbeat;
+import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
 import org.apache.logging.log4j.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Andre on 03.05.2015.
@@ -37,5 +41,15 @@ public class GCEHeartbeatService {
         log.info("heartbeat " + heartbeat.getIpAddress() + " " + heartbeat.getLoad());
 
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("getAllHeartbeats")
+    @Produces("application/json")
+    public Response getAllHeartbeats(){
+        List<HeartbeatModel> allHeartbeats = new ArrayList<>(sharedMemory.getAllHeartbeats());
+        Collections.sort(allHeartbeats);
+
+        return Response.ok().entity(allHeartbeats).header("Access-Control-Allow-Origin","*").header("Access-Control-Allow-Methods", "GET").build();
     }
 }
