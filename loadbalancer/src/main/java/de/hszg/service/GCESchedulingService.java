@@ -3,6 +3,7 @@ package de.hszg.service;
 import de.hszg.model.scheduling.Job;
 import de.hszg.model.scheduling.JobList;
 import de.hszg.model.scheduling.JobScheduleModel;
+import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
 import de.hszg.service.util.Schedule;
 
@@ -39,16 +40,24 @@ public class GCESchedulingService {
     @Path("/scheduleJobList")
     @Consumes("application/json")
     public Response scheduleJob(JobList jobList, @Context HttpServletRequest httpRequest){
+        boolean gceFound = false;
         //try {
             String requestIpAddress = Schedule.extractIpAddress(httpRequest.getRequestURL().toString());
 
             for(Job job: jobList.getJobList()){
-                String ipAddress = sharedMemory.getGCEWithLeastLoad();
+                while(!gceFound) {
+                    HeartbeatModel heartbeat = sharedMemory.getGCEWithLeastLoad();
+                    if (Schedule.checkGCEStatus(heartbeat)) {
+                        JobScheduleModel jobScheduleModel = new JobScheduleModel(job, requestIpAddress);
 
-                JobScheduleModel jobScheduleModel = new JobScheduleModel(job, requestIpAddress);
-
-                //not fully implemented
-                //Schedule.startJobComputing(jobScheduleModel, ipAddress);
+                        //not fully implemented
+                        //Schedule.startJobComputing(jobScheduleModel, heartbeat.getIpAddress())
+                        gceFound = true;
+                    }
+                    else{
+                        sharedMemory.deleteHeartbeat(heartbeat);
+                    }
+                }
             }
             return Response.ok().build();
         /*}

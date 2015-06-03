@@ -1,10 +1,7 @@
 package de.hszg.service;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import de.hszg.service.heartbeat.SharedMemory;
 import de.hszg.service.heartbeat.SharedMemoryFeature;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
 import java.util.HashSet;

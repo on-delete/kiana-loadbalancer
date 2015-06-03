@@ -1,6 +1,9 @@
 package de.hszg.service.util;
 
+import de.hszg.gce.GoogleComputeEngineFactory;
+import de.hszg.gce.util.GCE;
 import de.hszg.model.MultipleAPRequest;
+import de.hszg.model.heartbeat.Heartbeat;
 import de.hszg.model.scheduling.JobScheduleModel;
 import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Andre on 08.05.2015.
@@ -59,6 +63,29 @@ public class Schedule {
         }
         catch (Exception e){
             throw new IOException();
+        }
+    }
+
+    public static boolean checkGCEStatus(HeartbeatModel heartbeatModel){
+        GoogleComputeEngineFactory googleComputeEngineFactory = new GoogleComputeEngineFactory();
+
+        List<GCE> gceList = googleComputeEngineFactory.listGCEs();
+        List<String> ipAddressList = gceList.stream().map(GCE::getIp).collect(Collectors.toList());
+
+        if(ipAddressList.contains(heartbeatModel.getIpAddress())){
+            long systemTime = System.currentTimeMillis();
+
+            if(systemTime-heartbeatModel.getSystemTime()>1500){
+                log.info("Compute Engine mit IP "+heartbeatModel.getIpAddress()+" antwortet nicht mehr. Wird neu gestartet!");
+                String name = gceList.stream().filter((i) -> i.getIp().equals(heartbeatModel.getIpAddress())).findFirst().get().getName();
+                googleComputeEngineFactory.resetGCE(name);
+                return false;
+            }
+
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
