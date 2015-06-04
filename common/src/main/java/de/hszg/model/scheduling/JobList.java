@@ -1,6 +1,7 @@
 package de.hszg.model.scheduling;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,9 +11,14 @@ import java.util.List;
  */
 public class JobList implements Serializable{
 
-    private List<Job> jobList;
+    private List<Job> jobList = new ArrayList<>();
 
     public List<Job> getJobList() {
         return jobList;
+    }
+
+    @Override
+    public String toString() {
+        return "{\"jobList\":"+jobList+"}";
     }
 }

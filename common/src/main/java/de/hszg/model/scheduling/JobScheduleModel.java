@@ -31,4 +31,9 @@ public class JobScheduleModel implements Serializable {
     public void setRequestIpAddress(String requestIpAddress) {
         this.requestIpAddress = requestIpAddress;
     }
+
+    @Override
+    public String toString() {
+        return "{\"job\":"+job+",\"requestIpAddress\":\""+requestIpAddress+"\"}";
+    }
 }

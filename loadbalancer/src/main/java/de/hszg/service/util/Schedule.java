@@ -1,5 +1,7 @@
 package de.hszg.service.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hszg.gce.GoogleComputeEngineFactory;
 import de.hszg.gce.util.GCE;
 import de.hszg.model.MultipleAPRequest;
@@ -20,7 +22,10 @@ import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,13 +41,14 @@ public class Schedule {
 
     public static String startAggregateJob(MultipleAPRequest multipleAPRequest, String ipAddress) throws IOException{
         try {
-            SerializableEntity input = new SerializableEntity(multipleAPRequest, false);
+            StringEntity input = new StringEntity(multipleAPRequest.toString());
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
-            log.info("ipAdresse: " + ipAddress);
+            log.info("http://"+ ipAddress +":8080/GCESchedulingAggregationService/scheduleJob");
             HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCESchedulingAggregationService/scheduleJob");
             httpPost.setEntity(input);
+            log.info(readInputStreamAsString(httpPost.getEntity().getContent()));
             HttpResponse response = httpclient.execute(httpPost);
             HttpEntity entity = response.getEntity();
             if(entity!=null) {
@@ -61,12 +67,11 @@ public class Schedule {
 
     public static void startJobComputing(JobScheduleModel jobScheduleModel, String ipAddress) throws IOException{
         try {
-            SerializableEntity input = new SerializableEntity(jobScheduleModel, false);
+            StringEntity input = new StringEntity(jobScheduleModel.toString());
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
-            /*TODO Adresse des Services vervollständigen!*/
-            HttpPost httpPost = new HttpPost("http://"+ ipAddress +"");
+            HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCEComputeMacCountService/computeMacCount");
             httpPost.setEntity(input);
             httpclient.execute(httpPost);
             httpclient.close();
@@ -106,5 +111,40 @@ public class Schedule {
         String[] splittedServletPath = servletPath.split("/");
 
         return splittedServletPath[0];
+    }
+
+    private JsonNode readStringAsJson(String jsonString) {
+        log.info(jsonString);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = null;
+
+        try {
+            rootNode = mapper.readTree(jsonString);
+        } catch (IOException e) {
+        }
+
+        return rootNode;
+    }
+
+    /**
+     * Converts a input stream to a string.
+     *
+     * @param inputStreamReader a input stream
+     * @return string from input stream
+     * @throws IOException
+     */
+    private static String readInputStreamAsString(InputStream inputStreamReader)
+            throws IOException {
+        BufferedInputStream bis = new BufferedInputStream(inputStreamReader);
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        int result = bis.read();
+        while (result != -1) {
+            byte b = (byte) result;
+            buf.write(b);
+            result = bis.read();
+        }
+
+        return buf.toString();
     }
 }

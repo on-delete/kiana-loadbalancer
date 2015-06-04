@@ -36,4 +36,9 @@ public class Job {
     public void setJobId(int jobId) {
         this.jobId = jobId;
     }
+
+    @Override
+    public String toString() {
+        return "{\"macBucket\":\""+macBucket+"\",\"computeJobId\":\""+computeJobId+"\",\"jobId\":"+jobId+"}";
+    }
 }

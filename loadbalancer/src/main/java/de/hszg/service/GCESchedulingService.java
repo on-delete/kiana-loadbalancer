@@ -6,6 +6,8 @@ import de.hszg.model.scheduling.JobScheduleModel;
 import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
 import de.hszg.service.util.Schedule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,8 @@ import java.io.IOException;
 @Path("/SchedulingService")
 public class GCESchedulingService {
 
+    Logger log = LoggerFactory.getLogger(GCESchedulingService.class);
+
     @Inject
     private SharedMemory sharedMemory;
 
@@ -41,7 +45,7 @@ public class GCESchedulingService {
     @Consumes("application/json")
     public Response scheduleJob(JobList jobList, @Context HttpServletRequest httpRequest){
         boolean gceFound = false;
-        //try {
+        try {
             String requestIpAddress = Schedule.extractIpAddress(httpRequest.getRequestURL().toString());
 
             for(Job job: jobList.getJobList()){
@@ -50,8 +54,10 @@ public class GCESchedulingService {
                     if (Schedule.checkGCEStatus(heartbeat)) {
                         JobScheduleModel jobScheduleModel = new JobScheduleModel(job, requestIpAddress);
 
+                        log.info("IP Adresse GCE: " + heartbeat.getIpAddress());
+
                         //not fully implemented
-                        //Schedule.startJobComputing(jobScheduleModel, heartbeat.getIpAddress())
+                        Schedule.startJobComputing(jobScheduleModel, heartbeat.getIpAddress());
                         gceFound = true;
                     }
                     else{
@@ -60,10 +66,10 @@ public class GCESchedulingService {
                 }
             }
             return Response.ok().build();
-        /*}
+        }
         catch (IOException e){
             e.printStackTrace();
             return Response.serverError().build();
-        }*/
+        }
     }
 }

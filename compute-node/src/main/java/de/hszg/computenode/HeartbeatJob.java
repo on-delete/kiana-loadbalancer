@@ -32,7 +32,7 @@ public class HeartbeatJob implements Job {
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
-            HttpPut httpPut = new HttpPut("http://"+LOADBALANCER_IP+"/HeartbeatService/updateHeartbeat");
+            HttpPut httpPut = new HttpPut("http://"+LOADBALANCER_IP+"/loadbalancer/HeartbeatService/updateHeartbeat");
             httpPut.setEntity(input);
             CloseableHttpResponse response = null;
             try {

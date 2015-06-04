@@ -1,6 +1,7 @@
 package de.hszg.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -10,8 +11,8 @@ import java.util.List;
 public class MultipleAPRequest implements Serializable{
 
     private List<AccessPoint> accessPointList;
-    private Date startDate;
-    private Date endDate;
+    private String startDate = "";
+    private String endDate = "";
     private int gceCount;
 
     public void setAccessPointList(List<AccessPoint> accessPointList) {
@@ -22,19 +23,17 @@ public class MultipleAPRequest implements Serializable{
         return accessPointList;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
+    public String getStartDate() {return startDate;}
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
@@ -44,5 +43,10 @@ public class MultipleAPRequest implements Serializable{
 
     public void setGceCount(int gceCount) {
         this.gceCount = gceCount;
+    }
+
+    @Override
+    public String toString() {
+        return "{\"accessPointList\":" + accessPointList +",\"startDate\": "+startDate+",\"endDate\": "+endDate+",\"gceCount\":"+gceCount+"}";
     }
 }
