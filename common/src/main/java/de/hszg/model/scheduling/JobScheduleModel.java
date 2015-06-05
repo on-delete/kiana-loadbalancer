@@ -11,6 +11,8 @@ public class JobScheduleModel implements Serializable {
 
     private String requestIpAddress;
 
+    public JobScheduleModel(){}
+
     public JobScheduleModel(Job job, String requestIpAddress) {
         this.job = job;
         this.requestIpAddress = requestIpAddress;

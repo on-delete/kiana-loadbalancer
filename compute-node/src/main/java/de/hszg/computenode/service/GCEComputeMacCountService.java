@@ -22,12 +22,12 @@ import de.hszg.model.scheduling.JobScheduleModel;
  */
 @Path("/GCEComputeMacCountService")
 public class GCEComputeMacCountService {
-	
+
 	@POST
 	@Path("/computeMacCount")
 	@Consumes("application/json")
 	public Response computeMacCount(JobScheduleModel jobScheduleModel){
-		
+
 		JobResponse jobResponse = new JobResponse();
 		jobResponse.setComputeJobId(jobScheduleModel.getJob().getComputeJobId());
 		jobResponse.setJobId(jobScheduleModel.getJob().getJobId());

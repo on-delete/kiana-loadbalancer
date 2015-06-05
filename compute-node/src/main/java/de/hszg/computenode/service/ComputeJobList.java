@@ -10,7 +10,7 @@ import de.hszg.model.scheduling.JobList;
  * Created by Tobias on 26.05.2015.
  */
 public class ComputeJobList {
-	
+
 	private static ComputeJobList computeJobList = null;
 	
 	private HashMap<String, JobList> scheduleJobs;
