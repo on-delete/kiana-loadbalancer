@@ -12,6 +12,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.SerializableEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -34,7 +35,7 @@ public class GCEComputeMacCountService {
 		jobResponse.setMacCount(5);
 		
 		try {
-			SerializableEntity input = new SerializableEntity(jobResponse, false);
+			StringEntity input = new StringEntity(jobResponse.toString());
 			input.setContentType("application/json");
 
 			CloseableHttpClient httpclient = HttpClients.createDefault();

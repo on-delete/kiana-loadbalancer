@@ -32,5 +32,9 @@ public class JobResponse implements Serializable {
 		this.macCount = macCount;
 	}
 	
+	@Override
+    public String toString() {
+        return "{\"computeJobId\":\""+computeJobId+"\",\"jobId\":\""+jobId+"\",\"macCount\":"+macCount+"}";
+    }
 	
 }

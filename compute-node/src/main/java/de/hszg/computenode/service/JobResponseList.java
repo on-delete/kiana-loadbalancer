@@ -1,6 +1,7 @@
 
 package de.hszg.computenode.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public class JobResponseList {
 	
-	private List<JobResponse> jobResponseList;
+	private List<JobResponse> jobResponseList = new ArrayList<JobResponse>();
 	
 	public List<JobResponse> getJobResponseList(){
 		return jobResponseList;
