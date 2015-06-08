@@ -29,8 +29,6 @@ import java.io.IOException;
 @Path("/SchedulingService")
 public class GCESchedulingService {
 
-    Logger log = LoggerFactory.getLogger(GCESchedulingService.class);
-
     @Inject
     private SharedMemory sharedMemory;
 
@@ -46,17 +44,15 @@ public class GCESchedulingService {
     public Response scheduleJob(JobList jobList, @Context HttpServletRequest httpRequest){
         boolean gceFound = false;
         try {
-            String requestIpAddress = Schedule.extractIpAddress(httpRequest.getRequestURL().toString());
+            String requestIpAddress = httpRequest.getRemoteAddr();
 
             for(Job job: jobList.getJobList()){
+                gceFound = false;
                 while(!gceFound) {
                     HeartbeatModel heartbeat = sharedMemory.getGCEWithLeastLoad();
                     if (Schedule.checkGCEStatus(heartbeat)) {
                         JobScheduleModel jobScheduleModel = new JobScheduleModel(job, requestIpAddress);
 
-                        log.info("IP Adresse GCE: " + heartbeat.getIpAddress());
-
-                        //not fully implemented
                         Schedule.startJobComputing(jobScheduleModel, heartbeat.getIpAddress());
                         gceFound = true;
                     }

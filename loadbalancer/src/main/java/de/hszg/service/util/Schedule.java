@@ -45,10 +45,8 @@ public class Schedule {
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
-            log.info("http://"+ ipAddress +":8080/GCESchedulingAggregationService/scheduleJob");
             HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCESchedulingAggregationService/scheduleJob");
             httpPost.setEntity(input);
-            log.info(readInputStreamAsString(httpPost.getEntity().getContent()));
             HttpResponse response = httpclient.execute(httpPost);
             HttpEntity entity = response.getEntity();
             if(entity!=null) {

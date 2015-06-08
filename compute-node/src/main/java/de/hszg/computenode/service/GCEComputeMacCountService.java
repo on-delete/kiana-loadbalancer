@@ -39,7 +39,7 @@ public class GCEComputeMacCountService {
 			input.setContentType("application/json");
 
 			CloseableHttpClient httpclient = HttpClients.createDefault();
-			HttpPost httpPost = new HttpPost("http://" + jobScheduleModel.getRequestIpAddress() + "/GCESchedulingAggregationService/aggregateJob");
+			HttpPost httpPost = new HttpPost("http://" + jobScheduleModel.getRequestIpAddress() + ":8080/GCESchedulingAggregationService/aggregateJob");
 			httpPost.setEntity(input);
 			CloseableHttpResponse response = null;
 

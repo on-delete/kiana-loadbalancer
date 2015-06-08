@@ -22,6 +22,8 @@ import org.apache.http.impl.client.HttpClients;
 import de.hszg.model.MultipleAPRequest;
 import de.hszg.model.scheduling.Job;
 import de.hszg.model.scheduling.JobList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Tobias on 19.05.2015.
@@ -79,7 +81,7 @@ public class GCESchedulingAggregationService {
         }
         
         ComputeJobList.getInstance().removeJob(computeJobId);
-        
+
 		return Response.ok(macCount).build();
 	}
 	

@@ -291,7 +291,7 @@ public class GoogleComputeEngineClient {
      * @return JSON object
      */
     private JsonNode readStringAsJson(String jsonString) {
-        log.info(jsonString);
+        //log.info(jsonString);
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = null;

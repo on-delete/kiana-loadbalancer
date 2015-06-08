@@ -5,12 +5,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import de.hszg.model.scheduling.JobList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Tobias on 26.05.2015.
  */
 public class ComputeJobList {
-
 	private static ComputeJobList computeJobList = null;
 	
 	private HashMap<String, JobList> scheduleJobs;
