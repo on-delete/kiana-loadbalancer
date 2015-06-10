@@ -10,17 +10,17 @@ import java.util.List;
  */
 public class MultipleAPRequest implements Serializable{
 
-    private List<AccessPoint> accessPointList;
+    private String customerProject = "";
     private String startDate = "";
     private String endDate = "";
     private int gceCount;
 
-    public void setAccessPointList(List<AccessPoint> accessPointList) {
-        this.accessPointList = accessPointList;
+    public String getCustomerProject() {
+        return customerProject;
     }
 
-    public List<AccessPoint> getAccessPointList(){
-        return accessPointList;
+    public void setCustomerProject(String customerProject) {
+        this.customerProject = customerProject;
     }
 
     public String getStartDate() {return startDate;}
@@ -47,6 +47,6 @@ public class MultipleAPRequest implements Serializable{
 
     @Override
     public String toString() {
-        return "{\"accessPointList\":" + accessPointList +",\"startDate\": "+startDate+",\"endDate\": "+endDate+",\"gceCount\":"+gceCount+"}";
+        return "{\"customerProject\":"+customerProject+",\"startDate\": "+startDate+",\"endDate\": "+endDate+",\"gceCount\":"+gceCount+"}";
     }
 }
