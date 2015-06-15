@@ -7,43 +7,49 @@ import java.io.Serializable;
  * Created by Andre on 15.06.2015.
  */
 @Entity
+
+@NamedQueries({
+        @NamedQuery(name="JobResponseEntity.getAllJobResponse",
+                query="SELECT j FROM JobResponseEntity j")
+})
+
 @Table(name = "JobResponse")
 public class JobResponseEntity implements Serializable{
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ipAddress", nullable = false)
-    private String ipAddress;
+    @Column(name = "ipaddress", nullable = false)
+    private String ipaddress;
 
-    @Column(name = "GCEName", nullable = false)
-    private String GCEName;
+    @Column(name = "gcename", nullable = false)
+    private String gcename;
 
     @Column(name = "job", nullable = false)
     private String job;
 
-    @Column(name = "startTime", nullable = false)
-    private String startTime;
+    @Column(name = "starttime", nullable = false)
+    private String starttime;
 
-    @Column(name = "endTime", nullable = false)
-    private String endTime;
+    @Column(name = "endtime", nullable = false)
+    private String endtime;
 
     public JobResponseEntity() {
-        this.ipAddress = null;
-        this.GCEName = null;
+        this.ipaddress = null;
+        this.gcename = null;
         this.job = null;
-        this.startTime = null;
-        this.endTime = null;
+        this.starttime = null;
+        this.endtime = null;
     }
 
-    public JobResponseEntity(String ipAddress, String GCEName, String job, String startTime, String endTime) {
-        this.ipAddress = ipAddress;
-        this.GCEName = GCEName;
+    public JobResponseEntity(String ipaddress, String gcename, String job, String starttime, String endtime) {
+        this.ipaddress = ipaddress;
+        this.gcename = gcename;
         this.job = job;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.starttime = starttime;
+        this.endtime = endtime;
     }
 
     public Long getId() {
@@ -55,19 +61,19 @@ public class JobResponseEntity implements Serializable{
     }
 
     public String getIpAddress() {
-        return ipAddress;
+        return ipaddress;
     }
 
     public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+        this.ipaddress = ipAddress;
     }
 
-    public String getGCEName() {
-        return GCEName;
+    public String getgcename() {
+        return gcename;
     }
 
-    public void setGCEName(String GCEName) {
-        this.GCEName = GCEName;
+    public void setgcename(String gcename) {
+        this.gcename = gcename;
     }
 
     public String getJob() {
@@ -79,18 +85,18 @@ public class JobResponseEntity implements Serializable{
     }
 
     public String getEndTime() {
-        return endTime;
+        return endtime;
     }
 
     public void setEndTime(String endTime) {
-        this.endTime = endTime;
+        this.endtime = endTime;
     }
 
     public String getStartTime() {
-        return startTime;
+        return starttime;
     }
 
     public void setStartTime(String startTime) {
-        this.startTime = startTime;
+        this.starttime = startTime;
     }
 }

@@ -9,6 +9,7 @@ public class JobResponse {
     private String job = "";
     private String startTime = "";
     private String endTime = "";
+    private String gcename = "";
 
     public String getIpAddress() {
         return ipAddress;
@@ -42,8 +43,16 @@ public class JobResponse {
         this.endTime = endTime;
     }
 
+    public String getGcename() {
+        return gcename;
+    }
+
+    public void setGcename(String gcename) {
+        this.gcename = gcename;
+    }
+
     @Override
     public String toString() {
-        return "{\"ipAddress\":\""+ ipAddress + "\", \"job\":\""+job+"\",\"startTime\":\""+startTime+"\",\"endTime\":\""+endTime+"\"}";
+        return "{\"ipAddress\":\""+ ipAddress + "\", \"gcename\":\""+ gcename + "\", \"job\":\""+job+"\",\"startTime\":\""+startTime+"\",\"endTime\":\""+endTime+"\"}";
     }
 }
