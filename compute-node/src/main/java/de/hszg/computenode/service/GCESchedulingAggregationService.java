@@ -18,10 +18,12 @@ import org.apache.http.entity.SerializableEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.core.util.SystemClock;
 
 import de.hszg.model.MultipleAPRequest;
 import de.hszg.model.scheduling.Job;
 import de.hszg.model.scheduling.JobList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +43,9 @@ public class GCESchedulingAggregationService {
 		
 		Vector<String> hashBuckets = createHashBuckets(multipleAPRequest.getGceCount());
 		//TODO Test für die Kommunikation zwischen Loadbalancer und Compute Node durch eigentliche Implementation ersetzen
+		String customerProject = multipleAPRequest.getCustomerProject();
 		String computeJobId = UUID.randomUUID().toString();
-		JobList jobList = createJobList(hashBuckets, computeJobId);
+		JobList jobList = createJobList(hashBuckets, customerProject, computeJobId);
 		ComputeJobList.getInstance().addJob(jobList, computeJobId);
         try {
 			StringEntity input = new StringEntity(jobList.toString());
@@ -91,6 +94,7 @@ public class GCESchedulingAggregationService {
 	public Response aggregateJob(JobResponse jobResponse){
 		if(ComputeJobList.getInstance().jobExists(jobResponse.getComputeJobId())){
 			if(!ComputeJobList.getInstance().jobResponseAlreadyRecieved(jobResponse)){
+				jobResponse.setEndTime(System.currentTimeMillis());
 				ComputeJobList.getInstance().addJobResponse(jobResponse);
 			}
 		}
@@ -115,15 +119,18 @@ public class GCESchedulingAggregationService {
 		return hashBuckets;
 	}
 	
-	private JobList createJobList(Vector<String> hashBuckets, String computeJobId){
+	private JobList createJobList(Vector<String> hashBuckets, String customerProject, String computeJobId){
 		JobList jobList = new JobList();
 		//String computeJobId = UUID.randomUUID().toString();
 		int hashBucketSize = hashBuckets.size();
+		long startTime = System.currentTimeMillis();
 		for(int i = 0; i < hashBucketSize; i++){
 			Job job = new Job();
 			job.setJobId(i);
 			job.setComputeJobId(computeJobId);
+			job.setCustomerProject(customerProject);
 			job.setMacBucket(hashBuckets.get(i));
+			job.setStartTime(startTime);
 			jobList.getJobList().add(job);
 		}
 		return jobList;

@@ -1,10 +1,14 @@
 package de.hszg.computenode.service;
 
 import java.util.HashMap;
+import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import de.hszg.model.scheduling.Job;
 import de.hszg.model.scheduling.JobList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +31,10 @@ public class ComputeJobList {
 		lock = new ReentrantReadWriteLock();
 		writeLock = lock.writeLock();
 		readLock = lock.readLock();
+		// start job restart daemon
+		Thread jobRestartDaemon = new Thread(new ComputeJobMonitorDaemon());
+		jobRestartDaemon.setDaemon(true);
+		jobRestartDaemon.start();
 	}
 	
 	public static ComputeJobList getInstance(){
@@ -53,6 +61,15 @@ public class ComputeJobList {
 			jobResponses.remove(computeJobId);
 		}finally{
 			writeLock.unlock();
+		}
+	}
+	
+	public JobList getJobList(String computeJobId){
+		readLock.lock();
+		try{
+			return scheduleJobs.get(computeJobId);
+		}finally{
+			readLock.unlock();
 		}
 	}
 	
@@ -115,6 +132,15 @@ public class ComputeJobList {
 			}else{
 				return false;
 			}
+		}finally{
+			readLock.unlock();
+		}
+	}
+	
+	public Set<String> getComputeJobs(){
+		readLock.lock();
+		try{
+			return scheduleJobs.keySet();
 		}finally{
 			readLock.unlock();
 		}

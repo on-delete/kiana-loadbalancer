@@ -1,5 +1,6 @@
 package de.hszg.model.scheduling;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -8,14 +9,26 @@ import java.util.List;
  * Mocel class for the jobs with a list of all mac addresses that have to be computed.
  */
 public class Job {
+	
+	private String customerProject = "";
 
     private String macBucket;
 
     private String computeJobId;
 
     private int jobId;
+    
+    private long startTime;
 
-    public String getMacBucket() {
+    public String getCustomerProject() {
+		return customerProject;
+	}
+
+	public void setCustomerProject(String customerProject) {
+		this.customerProject = customerProject;
+	}
+
+	public String getMacBucket() {
         return macBucket;
     }
 
@@ -37,6 +50,14 @@ public class Job {
         this.jobId = jobId;
     }
 
+    public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+    
     @Override
     public String toString() {
         return "{\"macBucket\":\""+macBucket+"\",\"computeJobId\":\""+computeJobId+"\",\"jobId\":"+jobId+"}";
