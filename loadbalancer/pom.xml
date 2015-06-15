@@ -53,6 +53,10 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.7</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+        </dependency>
     </dependencies>
 
 <build>
