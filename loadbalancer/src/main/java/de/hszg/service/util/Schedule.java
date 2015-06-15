@@ -102,6 +102,20 @@ public class Schedule {
         }
     }
 
+    public static String getGCEName(String ipAddress){
+        GoogleComputeEngineFactory googleComputeEngineFactory = new GoogleComputeEngineFactory();
+
+        List<GCE> gceList = googleComputeEngineFactory.listGCEs();
+        List<String> ipAddressList = gceList.stream().map(GCE::getIp).collect(Collectors.toList());
+
+        if(ipAddressList.contains(ipAddress)){
+            String name = gceList.stream().filter((i) -> i.getIp().equals(ipAddress)).findFirst().get().getName();
+            return name;
+        }
+        else
+            return null;
+    }
+
     public static String extractIpAddress(String url){
         String[] splittedUrl = url.split("://");
 
