@@ -47,6 +47,6 @@ public class MultipleAPRequest implements Serializable{
 
     @Override
     public String toString() {
-        return "{\"customerProject\":"+customerProject+",\"startDate\": "+startDate+",\"endDate\": "+endDate+",\"gceCount\":"+gceCount+"}";
+        return "{\"customerProject\":\""+customerProject+"\",\"startDate\": "+startDate+",\"endDate\": "+endDate+",\"gceCount\":"+gceCount+"}";
     }
 }
