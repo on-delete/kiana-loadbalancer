@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Anzeige aller JobResponses</title>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script>
+        function aktualisieren(){
+            $.get("http://104.197.107.205:8080/loadbalancer/JobResponseTimeTracker/responseTimeTracker", function(data){
+                console.log(data);
+                buildTable(data.responseList);
+            });
+        }
+
+        function buildTable(data){
+            $("#jobResponseTable").empty();
+            $("#jobResponseTable").append("<tr><th align=\"left\">Ip-Adresse</th><th align=\"left\">GCE Name</th><th align=\"left\">Job</th><th align=\"left\">Startzeit</th><th align=\"left\">Endzeit</th></tr>");
+
+            for(var i=0;i<data.length;i++){
+                var obj = data[i];
+                var ipAddress = obj["ipAddress"];
+                var gcename = obj["gcename"];
+                var job = obj["job"];
+                var starttime = obj["startTime"];
+                var endtime = obj["endTime"];
+                $("#jobResponseTable").append("<tr><td>"+ipAddress+"</td><td>"+gcename+"</td><td>"+job+"</td><td>"+starttime+"</td><td>"+endtime+"</td></tr>");
+            }
+        }
+    </script>
+</head>
+<body>
+<div>
+    <form>
+        <button type="button" style="margin-bottom: 10px" onclick="aktualisieren()">Aktualisieren</button>
+        <table id="jobResponseTable" style="width:50%;" border="1">
+            <tr><th align="left">Ip-Adresse</th><th align="left">GCE Name</th><th align="left">Job</th><th align="left">Startzeit</th><th align="left">Endzeit</th></tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
