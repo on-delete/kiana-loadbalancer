@@ -22,6 +22,7 @@ public class Application extends javax.ws.rs.core.Application {
         classes.add(SharedMemoryFeature.class);
         classes.add(JacksonJsonProvider.class);
         classes.add(JobResponseTimeTrackerService.class);
+        classes.add(CustomerProjectsService.class);
 
         return classes;
     }
