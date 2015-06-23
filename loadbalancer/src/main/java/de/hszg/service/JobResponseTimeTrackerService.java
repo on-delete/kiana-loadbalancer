@@ -38,6 +38,7 @@ public class JobResponseTimeTrackerService {
 
     @GET
     @Path("responseTimeTracker")
+    @Produces("application/json")
     public Response responseTimeTracker(){
         List<JobResponseEntity> results = jobResponseService.getAll();
 
@@ -58,7 +59,7 @@ public class JobResponseTimeTrackerService {
                 jobResponseList.getResponseList().add(jobResponse);
             }
 
-            return Response.ok().entity(jobResponseList.toString()).build();
+            return Response.ok().entity(jobResponseList).header("Access-Control-Allow-Origin","*").header("Access-Control-Allow-Methods", "GET").build();
         }
     }
 }
