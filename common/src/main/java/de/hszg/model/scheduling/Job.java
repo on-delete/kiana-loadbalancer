@@ -60,6 +60,6 @@ public class Job {
     
     @Override
     public String toString() {
-        return "{\"macBucket\":\""+macBucket+"\",\"computeJobId\":\""+computeJobId+"\",\"jobId\":"+jobId+"}";
+        return "{\"customerProject\":\""+customerProject+"\", \"macBucket\":\""+macBucket+"\",\"computeJobId\":\""+computeJobId+"\",\"jobId\":"+jobId+"}";
     }
 }

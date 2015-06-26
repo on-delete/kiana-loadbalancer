@@ -48,7 +48,7 @@ public class JobResponse implements Serializable {
 	}
 	@Override
     public String toString() {
-        return "{\"computeJobId\":\""+computeJobId+"\",\"jobId\":\""+jobId+"\",\"macCount\":"+macCount+"\"ip\":\""+ip+"}";
+        return "{\"computeJobId\":\""+computeJobId+"\",\"jobId\":\""+jobId+"\",\"macCount\":\""+macCount+"\",\"ip\":\""+ip+"\"}";
     }
 	
 }

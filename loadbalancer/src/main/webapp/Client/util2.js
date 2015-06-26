@@ -14,7 +14,7 @@
   //{"customerProject": "Project",   "startDate": null,   "endDate": null, "gceCount": null}
 
   // request an der anzahl der MACs pro projekt
-function getMacAdress(){
+function getMacAdressOnce(){
   
   var project = $("#projectID").val();
   var myJSONObject = {"customerProject": project, "startDate": null, "endDate": null, "gceCount": null};

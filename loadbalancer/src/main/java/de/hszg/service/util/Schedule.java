@@ -42,6 +42,7 @@ public class Schedule {
     public static String startAggregateJob(MultipleAPRequest multipleAPRequest, String ipAddress) throws IOException{
         try {
             StringEntity input = new StringEntity(multipleAPRequest.toString());
+            log.info("StringEntity: " + input.toString());
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
