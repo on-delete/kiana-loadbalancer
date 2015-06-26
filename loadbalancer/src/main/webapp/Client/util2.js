@@ -35,6 +35,26 @@ function getMacAdress(){
        });
 }
 
+function getMacAdress(customerProject){
+
+    var myJSONObject = {"customerProject": customerProject, "startDate": null, "endDate": null, "gceCount": null};
+
+    $.ajax({
+        url: 'http://104.197.107.205:8080/loadbalancer/MacCountService/getMacCountForAP',
+        processData: false,
+        type: "POST",
+        data: JSON.stringify(myJSONObject), //JSON.stringify(myJSONObject),
+        contentType: "application/json",
+        success: function(response){
+            console.log("Success!");
+            createTable(customerProject, response);
+        },
+        error: function() {
+            alert(JSON.stringify(myJSONObject));
+        }
+    });
+}
+
 function response(){
   //TODO
   //das soll die funktion, die die nummer von MACs in dem feld Number of client MAC schreibt
@@ -85,24 +105,18 @@ function getAllProjects() {
             type: "GET",
             contentType: 'application/json',
             success: function(resultData) {
-               createTable(resultData);
+                $("#getAllProjects").empty();
+                $("#getAllProjects").append("<tr><th align=\"left\">Customer Project</th><th align=\"left\">Client MACs</th>");
+
+                for(var i=0;i<resultData.length;i++){
+                    var result = getMacAdress(resultData[i]);
+                }
             },
             error : function(jqXHR, textStatus, errorThrown) {
             },
-
         });
-        
-       function createTable(resultData){
-            $("#getAllProjects").empty();
-            $("#getAllProjects").append("<tr><th align=\"left\">Customer Project</th><th align=\"left\">Client MACs</th>");
+}
 
-            for(var i=0;i<data.length;i++){
-                var obj = data[i];
-                var customerProject = obj["customerProject"];
-                var clientMacs = obj["clientMacs"];
-                $("#getAllProjects").append("<tr><td>"+customerProject+"</td><td>"+clientMacs+"</td>");
-            }
-        }
- 
-  
+function createTable(customerProject, result){
+    $("#getAllProjects").append("<tr><td>"+customerProject+"</td><td>"+result+"</td>");
 }
