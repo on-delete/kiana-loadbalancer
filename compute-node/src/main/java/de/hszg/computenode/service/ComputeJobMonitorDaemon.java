@@ -54,7 +54,7 @@ public class ComputeJobMonitorDaemon implements Runnable {
 							}
 						}
 						if(open){
-							if((actualTime - job.getStartTime()) >= averageTime){
+							if((actualTime - job.getStartTime()) >= 2 * averageTime){
 								openJobList.getJobList().add(job);
 							}
 						}

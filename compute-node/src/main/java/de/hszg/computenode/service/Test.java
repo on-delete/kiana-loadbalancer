@@ -1,21 +1,9 @@
 package de.hszg.computenode.service;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Vector;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.Bigquery.Jobs.Insert;
@@ -24,56 +12,35 @@ import com.google.api.services.bigquery.model.Job;
 import com.google.api.services.bigquery.model.JobConfiguration;
 import com.google.api.services.bigquery.model.JobConfigurationQuery;
 import com.google.api.services.bigquery.model.JobReference;
+import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableRow;
 
 import de.hszg.computenode.bigquery.BigQueryAuthenticator;
-import de.hszg.model.scheduling.JobScheduleModel;
 
-/**
- * Created by Tobias on 19.05.2015.
- */
-@Path("/GCEComputeMacCountService")
-public class GCEComputeMacCountService {
-	
-	@POST
-	@Path("/computeMacCount")
-	@Consumes("application/json")
-	public Response computeMacCount(JobScheduleModel jobScheduleModel){
-		
-		Vector<String> macs = MacHelper.getInstance().getMacs(jobScheduleModel.getJob().getMacBucket());
-		String query = createQuery(macs, jobScheduleModel.getJob().getCustomerProject());
-		
-		JobResponse jobResponse = new JobResponse();
-		jobResponse.setComputeJobId(jobScheduleModel.getJob().getComputeJobId());
-		jobResponse.setJobId(jobScheduleModel.getJob().getJobId());
-		jobResponse.setMacCount(5);
-		
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Test test= new Test();
+		Vector<String> macs = MacHelper.getInstance().getMacs("1010101010");
+		String query = test.createQuery(macs, "research");
+		BigQueryAuthenticator bigQueryAuthenticator = new BigQueryAuthenticator();
+		Bigquery bigquery = null;
 		try {
-			StringEntity input = new StringEntity(jobResponse.toString());
-			input.setContentType("application/json");
-
-			CloseableHttpClient httpclient = HttpClients.createDefault();
-			HttpPost httpPost = new HttpPost("http://" + jobScheduleModel.getRequestIpAddress() + ":8080/GCESchedulingAggregationService/aggregateJob");
-			httpPost.setEntity(input);
-			CloseableHttpResponse response = null;
-
-			response = httpclient.execute(httpPost);
-			HttpEntity entity = response.getEntity();
-			response.close();
-			httpclient.close();
-		} catch (ClientProtocolException e) {
+			bigquery = bigQueryAuthenticator.getBigquery();
+		} catch (GeneralSecurityException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return Response.serverError().build();
+		}
+		
+		try {
+			test.executeQuery(bigquery, query);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return Response.serverError().build();
 		}
-		
-		return Response.ok().build();
 	}
-	
+
 	private String createQuery(Vector<String> macs, String customerProject){
 		String query = "SELECT COUNT(ClientMacAddr) AS macCount"+
 						"FORM " + BigQueryAuthenticator.PROJECT_ID + ":" + customerProject + ".observationsperstore"+
@@ -90,7 +57,7 @@ public class GCEComputeMacCountService {
 		return query;
 	}
 
-	public void executeQuery(Bigquery bigquery, String query) throws IOException {
+	private void executeQuery(Bigquery bigquery, String query) throws IOException {
 		Job job = new Job();
 		JobConfiguration config = new JobConfiguration();
 		JobConfigurationQuery queryConfig = new JobConfigurationQuery();
@@ -106,23 +73,12 @@ public class GCEComputeMacCountService {
 	  GetQueryResultsResponse queryResultsResponse = bigquery.jobs().getQueryResults(BigQueryAuthenticator.PROJECT_ID, jobDone.getJobReference().getJobId()).execute();
 	  
 	  List<TableRow> rows = queryResultsResponse.getRows();
-	  
-
-	  
-//	  Tabledata.List listReq = bigquery.tabledata().list(projectId,
-//	      jobDone.getConfiguration().getQuery().getDestinationTable().getDatasetId(),
-//	      jobDone.getConfiguration().getQuery().getDestinationTable().getTableId());
-//	  listReq.setMaxResults(maxResults);
-//	  TableDataList tableDataList = listReq.execute();
-//	
-//	  int rowsFetched = 0;
-//	  while (rowsFetched < tableDataList.getTotalRows()) {
-//	    listReq.setStartIndex(BigInteger.valueOf(rowsFetched));
-//	    tableDataList = listReq.execute();
-//	
-//	    printRows(null, tableDataList.getRows());
-//	    rowsFetched += tableDataList.getRows().size();
-//	  }
+	  for(TableRow row : rows){
+		  for(TableCell cell : row.getF()){
+			  System.out.print(cell.getV());
+		  }
+		  System.out.println();
+	  }
 }
 	
 	private static Job waitForJob(Bigquery bigquery, String projectId, JobReference jobRef)
@@ -147,4 +103,5 @@ public class GCEComputeMacCountService {
 		return job.getStatus().getState().equals("RUNNING") ||
 				job.getStatus().getState().equals("PENDING");
 	}
+	
 }
