@@ -19,7 +19,7 @@ public class HeartbeatTest {
     public static void main(String[] args) {
         ExecutorService executor = Executors.newFixedThreadPool(100);
 
-        for(int i = 1; i<=50; i++){
+        for(int i = 1; i<=20; i++){
             Runnable worker = new HttpThread(i);
             executor.execute(worker);
         }
@@ -36,7 +36,7 @@ public class HeartbeatTest {
             input.setContentType("application/json");
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
-            HttpPost httpPost = new HttpPost("http://localhost:8080/HeartbeatService/postHeartbeat");
+            HttpPost httpPost = new HttpPost("http://10.240.81.175:8080/HeartbeatService/postHeartbeat");
             httpPost.setEntity(input);
             CloseableHttpResponse response = null;
             try {
@@ -86,12 +86,12 @@ public class HeartbeatTest {
         }
 
         public void run() {
-            postHeartbeat(ipAddress);
+            //postHeartbeat(ipAddress);
 
             int i=0;
             while(i < 1){
                 try {
-                    Thread.sleep(700);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -16,22 +16,21 @@
   // request an der anzahl der MACs pro projekt
 function getMacAdress(){
   
-  var project = document.getElementById("projectID").value;
-  var myJSONObject = {"customerProject": project, "startDate": null, "endDate": null, "gceCount": null}; 
+  var project = $("#projectID").val();
+  var myJSONObject = {"customerProject": project, "startDate": null, "endDate": null, "gceCount": null};
   
   $.ajax({                                         
            url: 'http://104.197.107.205:8080/loadbalancer/MacCountService/getMacCountForAP', 
            processData: false,
            type: "POST",
-           data: myJSONObject, //JSON.stringify(myJSONObject),
+           data: JSON.stringify(myJSONObject), //JSON.stringify(myJSONObject),
            contentType: "application/json",
-  		     //crossDomain: true,
            success: function(response){
                console.log("Success!");
+               $("#macField").val(response);
             },
            error: function() {
               alert(JSON.stringify(myJSONObject));
-              //console.log("Too bad!");
             }
        });
 }
@@ -48,7 +47,6 @@ function response(){
 
 function refresh(){
             getCustomerProjects();
-            document.getElementById('chosenProject').value = '';
             document.getElementById('macField').value = '';
             document.getElementById('projectID').value = 'Choose project';
 }
@@ -58,10 +56,8 @@ function getCustomerProjects() {
     $.ajax({
             url: "http://104.197.107.205:8080/loadbalancer/customerProjects",
             type: "GET",
-            contentType: 'json',
+            contentType: 'application/json',
             success: function(data) {
-                //console.log(resultData);
-                //window.alert(resultData);
                 buildMenu(data);
             },
             error : function(jqXHR, textStatus, errorThrown) {
@@ -74,13 +70,8 @@ function getCustomerProjects() {
  // fügt die projects in der select option menü
 function buildMenu(data){
             for(var i=0;i<data.length;i++){
-                var projectName = obj["projectName"];
-                $.each(i, function(projectName) {   
-                 $('#projectID')
-                     .append($("<option></option>")
-                     .attr(projectName)
-                     .text(projectName)); 
-                });
+                var projectName = data[i];
+                $('#projectID').append("<option value="+projectName+">"+projectName+"</option>");
             }
 }  
 
@@ -92,10 +83,8 @@ function getAllProjects() {
     $.ajax({
             url: "http://104.197.107.205:8080/loadbalancer/customerProjects",
             type: "GET",
-            contentType: 'json',
+            contentType: 'application/json',
             success: function(resultData) {
-                //console.log(resultData);
-                //window.alert(resultData);
                createTable(resultData);
             },
             error : function(jqXHR, textStatus, errorThrown) {
