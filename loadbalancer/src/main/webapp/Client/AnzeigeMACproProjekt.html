@@ -16,9 +16,13 @@
         <td>
           Chosen Project
         </td>
-        <td>   
-          <input type="text" id="chosenProject">
-        </td>
+        <td>
+        <select id="projectID" >
+    	   <option value=".." selected="">Choose project</option>
+         <option value="1">1</option>
+         <option value="2">2</option>
+        </select>
+      </td>
         <td>                                                               
           <button id="buttonnumber" onclick="Javascript:getMacAdress()">Get MACs</button>
         </td>
@@ -35,13 +39,7 @@
       </td>
     </tr>
     <tr>
-      <td>
-        <select id="projectID" onclick="getValue()">
-    	   <option value=".." selected="">Choose project</option>
-         <option value="1">1</option>
-         <option value="2">2</option>
-        </select>
-      </td>
+      
     </tr>
    </table> 
    </center>                              

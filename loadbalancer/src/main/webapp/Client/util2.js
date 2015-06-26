@@ -16,7 +16,7 @@
   // request an der anzahl der MACs pro projekt
 function getMacAdress(){
   
-  var project = document.getElementById("chosenProject").value;
+  var project = document.getElementById("projectID").value;
   var myJSONObject = {"customerProject": project, "startDate": null, "endDate": null, "gceCount": null}; 
   
   $.ajax({                                         
@@ -59,7 +59,7 @@ function getCustomerProjects() {
             url: "http://104.197.107.205:8080/loadbalancer/customerProjects",
             type: "GET",
             contentType: 'json',
-            success: function(resultData) {
+            success: function(data) {
                 //console.log(resultData);
                 //window.alert(resultData);
                 buildMenu(data);
@@ -85,14 +85,7 @@ function buildMenu(data){
 }  
 
  // nimm ausgewählten project und schreib ihn im chosen project feld
-function getValue(){
 
-       if(document.getElementById('projectID') != '..')
-       {
-        var option = document.getElementById('projectID').value;
-        document.getElementById("chosenProject").value = option;
-       }
-}
 
  // get alle customer projects und MACs von dem server und erstell die tabelle         
 function getAllProjects() {
