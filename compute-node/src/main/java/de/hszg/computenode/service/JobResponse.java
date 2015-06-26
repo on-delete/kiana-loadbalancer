@@ -13,6 +13,7 @@ public class JobResponse implements Serializable {
 	private int jobId;
 	private int macCount;
 	private long endTime;
+	private String ip;
 	
 	public String getComputeJobId() {
 		return computeJobId;
@@ -39,9 +40,15 @@ public class JobResponse implements Serializable {
 	public void setEndTime(long endTime) {
 		this.endTime = endTime;
 	}
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
 	@Override
     public String toString() {
-        return "{\"computeJobId\":\""+computeJobId+"\",\"jobId\":\""+jobId+"\",\"macCount\":"+macCount+"}";
+        return "{\"computeJobId\":\""+computeJobId+"\",\"jobId\":\""+jobId+"\",\"macCount\":"+macCount+"\"ip\":\""+ip+"}";
     }
 	
 }

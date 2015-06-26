@@ -24,6 +24,7 @@ public class Test {
 		Test test= new Test();
 		Vector<String> macs = MacHelper.getInstance().getMacs("1010101010");
 		String query = test.createQuery(macs, "research");
+		System.out.println(query);
 		BigQueryAuthenticator bigQueryAuthenticator = new BigQueryAuthenticator();
 		Bigquery bigquery = null;
 		try {
@@ -40,20 +41,20 @@ public class Test {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private String createQuery(Vector<String> macs, String customerProject){
 		String query = "SELECT COUNT(ClientMacAddr) AS macCount"+
-						"FORM " + BigQueryAuthenticator.PROJECT_ID + ":" + customerProject + ".observationsperstore"+
-						"WHERE ";
+						" FROM [" + BigQueryAuthenticator.PROJECT_ID + ":" + customerProject + ".observationsperstore]"+
+						" WHERE ";
 		int macsSize = macs.size();
 		for(int i = 0; i < macs.size(); i++){
-			query = query.concat("RIGHT(ClientMacAddr, " + macs.get(i).length() +") == " + macs.get(i));
+			query = query.concat("(RIGHT(ClientMacAddr, " + macs.get(i).length() +") == '" + macs.get(i)+"')");
 			macsSize--;
-			if(macsSize > 1){
+			if(macsSize > 0){
 				query = query.concat(" OR ");
 			}
 		}
-		query = query.concat(" GROUP BY ClientMacAddr");
+		query = query.concat(" GROUP BY ClientMacAddr;");
 		return query;
 	}
 

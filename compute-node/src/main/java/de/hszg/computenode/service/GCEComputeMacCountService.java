@@ -1,6 +1,8 @@
 package de.hszg.computenode.service;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Vector;
 
@@ -42,11 +44,24 @@ public class GCEComputeMacCountService {
 		
 		Vector<String> macs = MacHelper.getInstance().getMacs(jobScheduleModel.getJob().getMacBucket());
 		String query = createQuery(macs, jobScheduleModel.getJob().getCustomerProject());
+		BigQueryAuthenticator bigQueryAuthenticator = new BigQueryAuthenticator();
+		Bigquery bigquery = null;
+		String macCount = "";
+		String ip = "";
+		try {
+			bigquery = bigQueryAuthenticator.getBigquery();
+			macCount = executeQuery(bigquery, query);
+			ip = InetAddress.getLocalHost().getHostAddress();
+		} catch (GeneralSecurityException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		JobResponse jobResponse = new JobResponse();
 		jobResponse.setComputeJobId(jobScheduleModel.getJob().getComputeJobId());
 		jobResponse.setJobId(jobScheduleModel.getJob().getJobId());
-		jobResponse.setMacCount(5);
+		jobResponse.setMacCount(Integer.parseInt(macCount));
+		jobResponse.setIp(ip);
 		
 		try {
 			StringEntity input = new StringEntity(jobResponse.toString());
@@ -75,22 +90,22 @@ public class GCEComputeMacCountService {
 	}
 	
 	private String createQuery(Vector<String> macs, String customerProject){
-		String query = "SELECT COUNT(ClientMacAddr) AS macCount"+
-						"FORM " + BigQueryAuthenticator.PROJECT_ID + ":" + customerProject + ".observationsperstore"+
-						"WHERE ";
+		String query = "SELECT COUNT(*) AS macCount FROM (SELECT COUNT(ClientMacAddr) AS macCount"+
+						" FROM [" + BigQueryAuthenticator.PROJECT_ID + ":" + customerProject + ".observationsperstore]"+
+						" WHERE ";
 		int macsSize = macs.size();
 		for(int i = 0; i < macs.size(); i++){
-			query = query.concat("RIGHT(ClientMacAddr, " + macs.get(i).length() +") == " + macs.get(i));
+			query = query.concat("(RIGHT(ClientMacAddr, " + macs.get(i).length() +") == '" + macs.get(i)+"')");
 			macsSize--;
-			if(macsSize > 1){
+			if(macsSize > 0){
 				query = query.concat(" OR ");
 			}
 		}
-		query = query.concat(" GROUP BY ClientMacAddr");
+		query = query.concat(" GROUP BY ClientMacAddr);");
 		return query;
 	}
 
-	public void executeQuery(Bigquery bigquery, String query) throws IOException {
+	public String executeQuery(Bigquery bigquery, String query) throws IOException {
 		Job job = new Job();
 		JobConfiguration config = new JobConfiguration();
 		JobConfigurationQuery queryConfig = new JobConfigurationQuery();
@@ -106,23 +121,8 @@ public class GCEComputeMacCountService {
 	  GetQueryResultsResponse queryResultsResponse = bigquery.jobs().getQueryResults(BigQueryAuthenticator.PROJECT_ID, jobDone.getJobReference().getJobId()).execute();
 	  
 	  List<TableRow> rows = queryResultsResponse.getRows();
-	  
-
-	  
-//	  Tabledata.List listReq = bigquery.tabledata().list(projectId,
-//	      jobDone.getConfiguration().getQuery().getDestinationTable().getDatasetId(),
-//	      jobDone.getConfiguration().getQuery().getDestinationTable().getTableId());
-//	  listReq.setMaxResults(maxResults);
-//	  TableDataList tableDataList = listReq.execute();
-//	
-//	  int rowsFetched = 0;
-//	  while (rowsFetched < tableDataList.getTotalRows()) {
-//	    listReq.setStartIndex(BigInteger.valueOf(rowsFetched));
-//	    tableDataList = listReq.execute();
-//	
-//	    printRows(null, tableDataList.getRows());
-//	    rowsFetched += tableDataList.getRows().size();
-//	  }
+	  String macCount = (String)rows.get(0).getF().get(0).getV();
+	  return macCount;
 }
 	
 	private static Job waitForJob(Bigquery bigquery, String projectId, JobReference jobRef)

@@ -96,6 +96,49 @@ public class GCESchedulingAggregationService {
 			if(!ComputeJobList.getInstance().jobResponseAlreadyRecieved(jobResponse)){
 				jobResponse.setEndTime(System.currentTimeMillis());
 				ComputeJobList.getInstance().addJobResponse(jobResponse);
+				
+				de.hszg.model.JobResponse response = new de.hszg.model.JobResponse();
+				
+				String computeJobId = jobResponse.getComputeJobId();
+				int jobId = jobResponse.getJobId();
+				
+				response.setJob(computeJobId + "-" + jobId);
+				response.setIpAddress(jobResponse.getIp());
+				for(Job job : ComputeJobList.getInstance().getJobList(computeJobId).getJobList()){
+					if(job.getJobId() == jobId){
+						response.setStartTime(Long.toString(job.getStartTime()));
+						break;
+					}
+				}
+				for(JobResponse responseJob: ComputeJobList.getInstance().getJobResponseList(computeJobId).getJobResponseList()){
+					if(responseJob.getJobId() == jobId){
+						response.setEndTime(Long.toString(responseJob.getEndTime()));
+						break;
+					}
+				}
+				
+				try {
+					StringEntity input = new StringEntity(response.toString());
+					input.setContentType("application/json");
+
+					CloseableHttpClient httpclient = HttpClients.createDefault();
+					HttpPost httpPost = new HttpPost("http://" + LOADBALANCER_IP + "/loadbalancer/JobResponseTimeTracker/saveResponseTime");
+					httpPost.setEntity(input);
+					CloseableHttpResponse httpResponse = null;
+
+					httpResponse = httpclient.execute(httpPost);
+					HttpEntity entity = httpResponse.getEntity();
+					httpResponse.close();
+					httpclient.close();
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return Response.serverError().build();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return Response.serverError().build();
+				}
 			}
 		}
 		return Response.ok().build();
