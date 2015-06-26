@@ -29,6 +29,8 @@ import com.google.api.services.bigquery.model.JobReference;
 import com.google.api.services.bigquery.model.TableRow;
 
 import de.hszg.computenode.bigquery.BigQueryAuthenticator;
+import de.hszg.computenode.service.util.JobResponse;
+import de.hszg.computenode.service.util.MacHelper;
 import de.hszg.model.scheduling.JobScheduleModel;
 
 /**
@@ -90,8 +92,8 @@ public class GCEComputeMacCountService {
 	}
 	
 	private String createQuery(Vector<String> macs, String customerProject){
-		String query = "SELECT COUNT(*) AS macCount FROM (SELECT COUNT(ClientMacAddr) AS macCount"+
-						" FROM [" + BigQueryAuthenticator.PROJECT_ID + ":" + customerProject + ".observationsperstore]"+
+		String query = "SELECT COUNT(*) AS count FROM (SELECT COUNT(ClientMacAddr) AS macCount"+
+						" FROM [" + BigQueryAuthenticator.PROJECT_ID + ":" + customerProject + ".observationperstore]"+
 						" WHERE ";
 		int macsSize = macs.size();
 		for(int i = 0; i < macs.size(); i++){
@@ -111,19 +113,20 @@ public class GCEComputeMacCountService {
 		JobConfigurationQuery queryConfig = new JobConfigurationQuery();
 		config.setQuery(queryConfig);
 
-	  job.setConfiguration(config);
-	  queryConfig.setQuery(query);
+		job.setConfiguration(config);
+		queryConfig.setQuery(query);
 	
-	  Insert insert = bigquery.jobs().insert(BigQueryAuthenticator.PROJECT_ID, job);
-	  insert.setProjectId(BigQueryAuthenticator.PROJECT_ID);
-	  Job jobDone = waitForJob(bigquery, BigQueryAuthenticator.PROJECT_ID, insert.execute().getJobReference());
+		Insert insert = bigquery.jobs().insert(BigQueryAuthenticator.PROJECT_ID, job);
+		insert.setProjectId(BigQueryAuthenticator.PROJECT_ID);
+		Job jobDone = waitForJob(bigquery, BigQueryAuthenticator.PROJECT_ID, insert.execute().getJobReference());
 	  
-	  GetQueryResultsResponse queryResultsResponse = bigquery.jobs().getQueryResults(BigQueryAuthenticator.PROJECT_ID, jobDone.getJobReference().getJobId()).execute();
+		GetQueryResultsResponse queryResultsResponse = bigquery.jobs().getQueryResults(BigQueryAuthenticator.PROJECT_ID, jobDone.getJobReference().getJobId()).execute();
 	  
-	  List<TableRow> rows = queryResultsResponse.getRows();
-	  String macCount = (String)rows.get(0).getF().get(0).getV();
-	  return macCount;
-}
+		List<TableRow> rows = queryResultsResponse.getRows();
+		
+		String macCount = (String) rows.get(0).getF().get(0).getV();
+		return macCount;
+	}
 	
 	private static Job waitForJob(Bigquery bigquery, String projectId, JobReference jobRef)
 	      throws IOException {
@@ -134,8 +137,6 @@ public class GCEComputeMacCountService {
 				// ignore
 			}
 			Job pollJob = bigquery.jobs().get(projectId, jobRef.getJobId()).execute();
-//			println("Waiting on job %s ... Current status: %s", jobRef.getJobId(),
-//					pollJob.getStatus().getState());
 			if (!isJobRunning(pollJob)) {
 				return pollJob;
 			}
@@ -143,7 +144,6 @@ public class GCEComputeMacCountService {
 	}
 	
 	private static boolean isJobRunning(Job job) {
-//println("job status: " + job.getStatus().getState());
 		return job.getStatus().getState().equals("RUNNING") ||
 				job.getStatus().getState().equals("PENDING");
 	}

@@ -1,4 +1,4 @@
-package de.hszg.computenode.service;
+package de.hszg.computenode.service.util;
 
 import java.io.IOException;
 import java.util.Set;

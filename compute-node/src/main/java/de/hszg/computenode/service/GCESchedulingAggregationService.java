@@ -20,6 +20,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.core.util.SystemClock;
 
+import de.hszg.computenode.service.util.ComputeJobList;
+import de.hszg.computenode.service.util.JobResponse;
 import de.hszg.model.MultipleAPRequest;
 import de.hszg.model.scheduling.Job;
 import de.hszg.model.scheduling.JobList;

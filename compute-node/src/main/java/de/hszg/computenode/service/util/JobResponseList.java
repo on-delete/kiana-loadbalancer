@@ -1,5 +1,5 @@
 
-package de.hszg.computenode.service;
+package de.hszg.computenode.service.util;
 
 import java.util.ArrayList;
 import java.util.List;

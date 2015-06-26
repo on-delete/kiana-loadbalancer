@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.hszg.computenode.service;
+package de.hszg.computenode.service.util;
 
 import java.util.HashMap;
 import java.util.Vector;
