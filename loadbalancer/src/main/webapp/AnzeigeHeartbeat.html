@@ -5,6 +5,11 @@
     <title>Anzeige aller Heartbeats</title>
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script>
+        function start(){
+            aktualisieren();
+            setInterval(function(){ aktualisieren(); }, 5000);
+        }
+
         function aktualisieren(){
             $.get("http://104.197.107.205:8080/loadbalancer/HeartbeatService/getAllHeartbeats", function(data){
                 console.log(data);
@@ -21,7 +26,7 @@
                 var ipAddress = obj["ipAddress"];
                 var load = obj["load"];
                 var numberJobs = obj["numberJobs"];
-                $("#heartbeatTable").append("<tr><td>"+ipAddress+"</td><td>"+load+"</td><td>"+numberJobs+"</td></tr>");
+                $("#heartbeatTable").append("<tr><td>"+ipAddress+"</td><td>"+load*100+"</td><td>"+numberJobs+"</td></tr>");
             }
         }
     </script>
@@ -29,7 +34,7 @@
 <body>
 <div>
     <form>
-        <button type="button" style="margin-bottom: 10px" onclick="aktualisieren()">Aktualisieren</button>
+        <button type="button" style="margin-bottom: 10px" onclick="start()">Aktualisieren</button>
         <table id="heartbeatTable" style="width:50%;" border="1">
             <tr><th align="left">Ip-Adresse</th><th align="left">Load</th><th align="left">Job-Anzahl</th></tr>
         </table>
