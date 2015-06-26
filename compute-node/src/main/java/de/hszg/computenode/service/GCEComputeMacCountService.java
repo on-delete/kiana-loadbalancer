@@ -18,6 +18,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.Bigquery.Jobs.Insert;
@@ -39,12 +41,15 @@ import de.hszg.model.scheduling.JobScheduleModel;
 @Path("/GCEComputeMacCountService")
 public class GCEComputeMacCountService {
 	
+	private static Logger log = LogManager.getRootLogger();
+	
 	@POST
 	@Path("/computeMacCount")
 	@Consumes("application/json")
 	public Response computeMacCount(JobScheduleModel jobScheduleModel){
 		
 		Vector<String> macs = MacHelper.getInstance().getMacs(jobScheduleModel.getJob().getMacBucket());
+		log.info(jobScheduleModel.getJob().getCustomerProject());
 		String query = createQuery(macs, jobScheduleModel.getJob().getCustomerProject());
 		BigQueryAuthenticator bigQueryAuthenticator = new BigQueryAuthenticator();
 		Bigquery bigquery = null;
@@ -92,6 +97,7 @@ public class GCEComputeMacCountService {
 	}
 	
 	private String createQuery(Vector<String> macs, String customerProject){
+		log.info(customerProject);
 		String query = "SELECT COUNT(*) AS count FROM (SELECT COUNT(ClientMacAddr) AS macCount"+
 						" FROM [" + BigQueryAuthenticator.PROJECT_ID + ":" + customerProject + ".observationperstore]"+
 						" WHERE ";
