@@ -3,6 +3,7 @@ package de.hszg.service;
 import de.hszg.model.heartbeat.Heartbeat;
 import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
+import de.hszg.service.util.Schedule;
 import org.apache.logging.log4j.*;
 
 import javax.inject.Inject;
@@ -48,6 +49,15 @@ public class GCEHeartbeatService {
     @Produces("application/json")
     public Response getAllHeartbeats(){
         List<HeartbeatModel> allHeartbeats = new ArrayList<>(sharedMemory.getAllHeartbeats());
+
+        for(HeartbeatModel heartbeat : allHeartbeats){
+            if (!Schedule.checkGCEStatus(heartbeat)){
+                sharedMemory.deleteHeartbeat(heartbeat);
+            }
+        }
+
+        allHeartbeats = new ArrayList<>(sharedMemory.getAllHeartbeats());
+
         Collections.sort(allHeartbeats);
 
         return Response.ok().entity(allHeartbeats).header("Access-Control-Allow-Origin","*").header("Access-Control-Allow-Methods", "GET").build();
