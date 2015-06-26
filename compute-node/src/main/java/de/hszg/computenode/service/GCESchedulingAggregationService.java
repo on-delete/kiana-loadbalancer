@@ -14,20 +14,17 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.SerializableEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.logging.log4j.core.util.SystemClock;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.hszg.computenode.service.util.ComputeJobList;
 import de.hszg.computenode.service.util.JobResponse;
 import de.hszg.model.MultipleAPRequest;
 import de.hszg.model.scheduling.Job;
 import de.hszg.model.scheduling.JobList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by Tobias on 19.05.2015.
@@ -37,6 +34,8 @@ public class GCESchedulingAggregationService {
 
 	private static String LOADBALANCER_IP = "104.197.107.205:8080";
 	
+	private static Logger log = LogManager.getRootLogger();
+	
 	@POST
     @Path("/scheduleJob")
     @Consumes("application/json")
@@ -45,6 +44,7 @@ public class GCESchedulingAggregationService {
 		
 		Vector<String> hashBuckets = createHashBuckets(multipleAPRequest.getGceCount());
 		//TODO Test für die Kommunikation zwischen Loadbalancer und Compute Node durch eigentliche Implementation ersetzen
+		log.info(multipleAPRequest.getCustomerProject());
 		String customerProject = multipleAPRequest.getCustomerProject();
 		String computeJobId = UUID.randomUUID().toString();
 		JobList jobList = createJobList(hashBuckets, customerProject, computeJobId);
@@ -172,6 +172,7 @@ public class GCESchedulingAggregationService {
 		for(int i = 0; i < hashBucketSize; i++){
 			Job job = new Job();
 			job.setJobId(i);
+			log.info(customerProject);
 			job.setComputeJobId(computeJobId);
 			job.setCustomerProject(customerProject);
 			job.setMacBucket(hashBuckets.get(i));
