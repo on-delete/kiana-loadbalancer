@@ -11,13 +11,17 @@ import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.SerializableEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +49,10 @@ public class Schedule {
             log.info("StringEntity: " + input.toString());
             input.setContentType("application/json");
 
-            CloseableHttpClient httpclient = HttpClients.createDefault();
+            RequestConfig config = RequestConfig.custom()
+                    .setSocketTimeout(15000).build();
+
+            CloseableHttpClient httpclient =  HttpClientBuilder.create().setDefaultRequestConfig(config).build();
             HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCESchedulingAggregationService/scheduleJob");
             httpPost.setEntity(input);
             HttpResponse response = httpclient.execute(httpPost);
@@ -69,7 +76,10 @@ public class Schedule {
             StringEntity input = new StringEntity(jobScheduleModel.toString());
             input.setContentType("application/json");
 
-            CloseableHttpClient httpclient = HttpClients.createDefault();
+            RequestConfig config = RequestConfig.custom()
+                    .setSocketTimeout(15000).build();
+
+            CloseableHttpClient httpclient =  HttpClientBuilder.create().setDefaultRequestConfig(config).build();
             HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCEComputeMacCountService/computeMacCount");
             httpPost.setEntity(input);
             httpclient.execute(httpPost);
