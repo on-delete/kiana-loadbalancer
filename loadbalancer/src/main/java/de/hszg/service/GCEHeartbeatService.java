@@ -50,16 +50,18 @@ public class GCEHeartbeatService {
     public Response getAllHeartbeats(){
         List<HeartbeatModel> allHeartbeats = new ArrayList<>(sharedMemory.getAllHeartbeats());
 
-        for(HeartbeatModel heartbeat : allHeartbeats){
-            if (!Schedule.checkGCEStatus(heartbeat)){
-                sharedMemory.deleteHeartbeat(heartbeat);
-            }
-        }
-
-        allHeartbeats = new ArrayList<>(sharedMemory.getAllHeartbeats());
-
         Collections.sort(allHeartbeats);
 
         return Response.ok().entity(allHeartbeats).header("Access-Control-Allow-Origin","*").header("Access-Control-Allow-Methods", "GET").build();
+    }
+
+    @GET
+    @Path("/checkHeartbeats")
+    public Response checkHeartbeats(){
+        List<HeartbeatModel> allHeartbeats = new ArrayList<>(sharedMemory.getAllHeartbeats());
+
+        allHeartbeats.stream().filter(heartbeat -> !Schedule.checkGCEStatus(heartbeat)).forEach(sharedMemory::deleteHeartbeat);
+
+        return Response.ok().build();
     }
 }
