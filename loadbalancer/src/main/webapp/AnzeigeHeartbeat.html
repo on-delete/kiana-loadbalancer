@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <title>Anzeige aller Heartbeats</title>
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script>
         function start(){
             aktualisieren();
@@ -32,10 +40,10 @@
     </script>
 </head>
 <body>
-<div>
+<div style="margin-top: 10px">
     <form>
-        <button type="button" style="margin-bottom: 10px" onclick="start()">Aktualisieren</button>
-        <table id="heartbeatTable" style="width:50%;" border="1">
+        <div style="text-align: center"><button type="button" class="btn btn-primary" style="margin-bottom: 10px" onclick="start()">Aktualisieren</button></div>
+        <table class="table" id="heartbeatTable" style="width:50%; margin: 0 auto 0 auto">
             <tr><th align="left">Ip-Adresse</th><th align="left">Load</th><th align="left">Job-Anzahl</th></tr>
         </table>
     </form>

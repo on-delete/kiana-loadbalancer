@@ -1,45 +1,37 @@
 <!DOCTYPE html>
-<html>           
-  <head>                 
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">                 
-    <meta name="generator" content="PSPad editor, www.pspad.com">                 
-    <title>AnzeigeMACproProjekt</title>         
-    <link rel="stylesheet" type="text/css" href="mystyle.css">        
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="PSPad editor, www.pspad.com">
+    <title>AnzeigeMACproProjekt</title>
+    <!--<link rel="stylesheet" type="text/css" href="mystyle.css">        -->
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="util2.js"></script>       
-  </head>           
-  <body onload="getCustomerProjects()">
-    <center>
-    <h1>Show MACs for Project</h1>                                    
-    <table>
-      <tr>
-        <td>
-          Chosen Project
-        </td>
-        <td>
-        <select id="projectID" >
-    	   <option value=".." selected="">Choose project</option>
+    <script type="text/javascript" src="util2.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body onload="getCustomerProjects()">
+<h1 style="text-align: center">Show MACs for Project</h1>
+
+<div style="width: 100%;">
+    <div style="display: table; margin: 50px auto 0 auto">
+    <div class="form-inline" style="margin-bottom: 10px">Chosen Project:
+        <select id="projectID" class="form-control">
+            <option value=".." selected="">Choose project</option>
         </select>
-      </td>
-        <td>                                                               
-          <button id="buttonnumber" onclick="Javascript:getMacAdressOnce()">Get MACs</button>
-        </td>
-        <td>
-          <button type="button" onclick="Javascript:refresh()">Refresh</button>
-        </td>
-      </tr>   
-     <tr>
-      <td> 
-        Number of client MAC
-      </td>
-      <td>  
-        <input type="text" id="macField" readonly/>
-      </td>
-    </tr>
-    <tr>
-      
-    </tr>
-   </table> 
-   </center>                              
-  </body>
+        <button class="btn btn-primary" id="buttonnumber" onclick="Javascript:getMacAdressOnce()">Get MACs</button>
+        <button class="btn btn-default" type="button" onclick="Javascript:refresh()">Refresh</button>
+    </div>
+    <div class="form-inline">Number of client MAC:
+        <input class="form-control" type="text" id="macField" readonly/>
+    </div>
+    </div>
+</div>
+</body>
 </html>
