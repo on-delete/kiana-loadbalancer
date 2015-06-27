@@ -46,11 +46,10 @@ public class Schedule {
     public static String startAggregateJob(MultipleAPRequest multipleAPRequest, String ipAddress) throws IOException{
         try {
             StringEntity input = new StringEntity(multipleAPRequest.toString());
-            log.info("StringEntity: " + input.toString());
             input.setContentType("application/json");
 
             RequestConfig config = RequestConfig.custom()
-                    .setSocketTimeout(15000).build();
+                    .setSocketTimeout(60000).build();
 
             CloseableHttpClient httpclient =  HttpClientBuilder.create().setDefaultRequestConfig(config).build();
             HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCESchedulingAggregationService/scheduleJob");
@@ -77,7 +76,7 @@ public class Schedule {
             input.setContentType("application/json");
 
             RequestConfig config = RequestConfig.custom()
-                    .setSocketTimeout(15000).build();
+                    .setSocketTimeout(60000).build();
 
             CloseableHttpClient httpclient =  HttpClientBuilder.create().setDefaultRequestConfig(config).build();
             HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCEComputeMacCountService/computeMacCount");
@@ -137,8 +136,6 @@ public class Schedule {
     }
 
     private JsonNode readStringAsJson(String jsonString) {
-        log.info(jsonString);
-
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = null;
 

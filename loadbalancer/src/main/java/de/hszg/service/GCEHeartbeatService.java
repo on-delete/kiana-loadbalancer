@@ -4,7 +4,6 @@ import de.hszg.model.heartbeat.Heartbeat;
 import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
 import de.hszg.service.util.Schedule;
-import org.apache.logging.log4j.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -22,9 +21,6 @@ import java.util.List;
 
 @Path("/HeartbeatService")
 public class GCEHeartbeatService {
-
-    private static Logger log = LogManager.getRootLogger();
-
     @Inject
     private SharedMemory sharedMemory;
 
@@ -38,8 +34,6 @@ public class GCEHeartbeatService {
     @Consumes("application/json")
     public Response updateHeartbeat(Heartbeat heartbeat){
         sharedMemory.updateMemory(heartbeat);
-
-        log.info("heartbeat " + heartbeat.getIpAddress() + " " + heartbeat.getLoad());
 
         return Response.ok().build();
     }

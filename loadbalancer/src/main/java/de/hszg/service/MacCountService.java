@@ -1,13 +1,9 @@
 package de.hszg.service;
 
 import de.hszg.model.MultipleAPRequest;
-import de.hszg.model.scheduling.JobScheduleModel;
 import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
 import de.hszg.service.util.Schedule;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -23,7 +19,6 @@ import java.io.IOException;
  */
 @Path("/MacCountService")
 public class MacCountService {
-    private static Logger log = LogManager.getRootLogger();
     @Inject
     private SharedMemory sharedMemory;
 
@@ -43,8 +38,6 @@ public class MacCountService {
                 HeartbeatModel heartbeat = sharedMemory.getGCEWithLeastLoad();
                 if (Schedule.checkGCEStatus(heartbeat)) {
                     multipleAPRequest.setGceCount(sharedMemory.getAllHeartbeats().size());
-
-                    log.info("MacCount vor Scheduling: " + multipleAPRequest);
 
                     response = Schedule.startAggregateJob(multipleAPRequest, heartbeat.getIpAddress());
                     gceFound = true;
