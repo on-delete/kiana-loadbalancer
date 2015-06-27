@@ -43,14 +43,14 @@ public class MacCountService {
                 return Response.ok().entity(response).build();
             }
             catch (NumberFormatException e){
-                e.printStackTrace();
+                //e.printStackTrace();
                 return Response.serverError().build();
             }
         } catch (IndexOutOfBoundsException |IOException e){
             /*TODO
             In dem Fall wurde keine GCE aufgezeichnet, starten einer GCE?
              */
-            e.printStackTrace();
+            //e.printStackTrace();
             return Response.serverError().build();
         }
     }

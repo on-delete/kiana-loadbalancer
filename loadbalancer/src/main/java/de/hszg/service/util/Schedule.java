@@ -45,6 +45,8 @@ public class Schedule {
 
     public static String startAggregateJob(MultipleAPRequest multipleAPRequest, String ipAddress) throws IOException{
         try {
+            log.info("Aggregat-Job auf compute-node: " + ipAddress);
+
             StringEntity input = new StringEntity(multipleAPRequest.toString());
             input.setContentType("application/json");
 
@@ -98,7 +100,7 @@ public class Schedule {
         if(ipAddressList.contains(heartbeatModel.getIpAddress())){
             long systemTime = System.currentTimeMillis();
 
-            if(systemTime-heartbeatModel.getSystemTime()>3000){
+            if(systemTime-heartbeatModel.getSystemTime()>6000){
                 log.info("Compute Engine mit IP "+heartbeatModel.getIpAddress()+" antwortet nicht mehr. Wird neu gestartet!");
                 String name = gceList.stream().filter((i) -> i.getIp().equals(heartbeatModel.getIpAddress())).findFirst().get().getName();
                 googleComputeEngineFactory.resetGCE(name);
