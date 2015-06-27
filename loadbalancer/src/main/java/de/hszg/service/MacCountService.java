@@ -38,7 +38,14 @@ public class MacCountService {
         try {
             String response = Schedule.startAggregateJob(multipleAPRequest, heartbeat.getIpAddress());
 
-            return Response.ok().entity(response).build();
+            try{
+                int responseInt = Integer.parseInt(response);
+                return Response.ok().entity(response).build();
+            }
+            catch (NumberFormatException e){
+                e.printStackTrace();
+                return Response.serverError().build();
+            }
         } catch (IndexOutOfBoundsException |IOException e){
             /*TODO
             In dem Fall wurde keine GCE aufgezeichnet, starten einer GCE?
