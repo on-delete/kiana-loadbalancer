@@ -39,18 +39,22 @@ function getMacAdress(customerProject){
 
     var myJSONObject = {"customerProject": customerProject, "startDate": null, "endDate": null, "gceCount": null};
 
+    getMACCount(myJSONObject);
+}
+
+function getMACCount(jsonDoc) {
     $.ajax({
         url: 'http://104.197.107.205:8080/loadbalancer/MacCountService/getMacCountForAP',
         processData: false,
         type: "POST",
-        data: JSON.stringify(myJSONObject), //JSON.stringify(myJSONObject),
+        data: JSON.stringify(jsonDoc), //JSON.stringify(myJSONObject),
         contentType: "application/json",
         success: function(response){
             console.log("Success!");
-            createTable(customerProject, response);
+            createTable(jsonDoc.customerProject, response);
         },
         error: function() {
-            alert(JSON.stringify(myJSONObject));
+            setTimeout(function() {getMACCount(jsonDoc);}, 5000);
         }
     });
 }
