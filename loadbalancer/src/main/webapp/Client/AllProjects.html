@@ -6,12 +6,20 @@
     <title>Load Balancer     
     </title>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="util2.js"></script>      
+    <script type="text/javascript" src="util2.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </head>     
   <body onload="getCustomerProjects()">    
     <center>
       <h1>Show all Projects and their MACs</h1>           
-      <table id="getAllProjects" border="1">                 
+      <table class="table" style="margin: 50px 10% 0 10%; width: 80% !important;" id="getAllProjects">
         <tr>                     
           <th>Customer Project           
           </th>                     
@@ -20,6 +28,7 @@
         </tr>           
       </table>
       <br>        
-      <button id="recompute" onclick="Javascript:getAllProjects()">Recompute</button>     
+      <button class="btn btn-primary" id="recompute" onclick="Javascript:getAllProjects()">Recompute</button>
+      </center>
   </body>
 </html>
