@@ -1,9 +1,11 @@
 package de.hszg.service;
 
 import de.hszg.gce.GoogleComputeEngineFactory;
+import de.hszg.gce.util.GCE;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 
 /**
@@ -54,9 +56,19 @@ public class GCEComputeNodeManager {
     }
 
     @DELETE
-    @Path("/{name}")
-    public Response deleteGCE(@PathParam("name") String name) {
+    @Path("/{ip}")
+    public Response deleteGCE(@PathParam("ip") String ip) {
         GoogleComputeEngineFactory googleComputeEngineFactory = new GoogleComputeEngineFactory();
+        List<GCE> gceList = googleComputeEngineFactory.listGCEs();
+
+        String name = "";
+
+        for (GCE gce : gceList) {
+            if (gce.getIp().equals(ip)) {
+                name = gce.getName();
+            }
+        }
+
         if (googleComputeEngineFactory.deleteGCE(name)) {
             return Response.ok().build();
         } else {
@@ -73,5 +85,17 @@ public class GCEComputeNodeManager {
         } else {
             return Response.status(418).build();
         }
+    }
+
+    @PUT
+    @Path("/{start}/{count}")
+    public Response createGCE(@PathParam("start") int start, @PathParam("count") int count) {
+        GoogleComputeEngineFactory googleComputeEngineFactory = new GoogleComputeEngineFactory();
+
+        for (int i = 0; i < count; i++) {
+            googleComputeEngineFactory.createGCE("test-compute-node-" + (start + i));
+        }
+
+        return Response.ok().build();
     }
 }

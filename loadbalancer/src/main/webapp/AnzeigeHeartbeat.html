@@ -25,27 +25,46 @@
             });
         }
 
+        function loesche(ip) {
+            $.ajax({
+                url: "http://104.197.107.205:8080/loadbalancer/gce/" + ip,
+                type: "DELETE"
+            });
+        }
+
+        function create() {
+            var count = $("#count").val();
+            var start = $("#start").val();
+
+            $.ajax({
+                url: "http://104.197.107.205:8080/loadbalancer/gce/" + start + "/" + count,
+                type: "PUT"
+            });
+        }
+
         function buildTable(data){
             $("#heartbeatTable").empty();
-            $("#heartbeatTable").append("<tr><th align=\"left\">Ip-Adresse</th><th align=\"left\">Load</th><th align=\"left\">Job-Anzahl</th></tr>");
+//            $("#heartbeatTable").append("<tr><th align=\"left\">Ip-Adresse</th><th align=\"left\">Load</th><th align=\"left\">Job-Anzahl</th></tr>");
 
             for(var i=0;i<data.length;i++){
                 var obj = data[i];
                 var ipAddress = obj["ipAddress"];
                 var load = obj["load"];
                 var numberJobs = obj["numberJobs"];
-                $("#heartbeatTable").append("<tr><td>"+ipAddress+"</td><td>"+load*100+"</td><td>"+numberJobs+"</td></tr>");
+                $("#heartbeatTable").append("<tr><td>"+ipAddress+"</td><td>"+load*100+"</td><td>"+numberJobs+"</td><td><span onclick=\"loesche('" + ipAddress + "')\" style='color: red' class='glyphicon glyphicon-remove'><a href='#'></a></span></td></tr>");
             }
         }
     </script>
 </head>
-<body>
+<body onload="start()">
 <div style="margin-top: 10px">
     <form>
-        <div style="text-align: center"><button type="button" class="btn btn-primary" style="margin-bottom: 10px" onclick="start()">Aktualisieren</button></div>
-        <table class="table" id="heartbeatTable" style="width:50%; margin: 0 auto 0 auto">
-            <tr><th align="left">Ip-Adresse</th><th align="left">Load</th><th align="left">Job-Anzahl</th></tr>
+        <!--<div style="text-align: center"><button type="button" class="btn btn-primary" style="margin-bottom: 10px" onclick="start()">Aktualisieren</button></div>-->
+        <table class="table" style="width:50%; margin: 0 auto 0 auto">
+            <thead><tr><th align="left">Ip-Adresse</th><th align="left">Load</th><th align="left">Job-Anzahl</th><th>&nbsp;</th></tr></thead>
+            <tbody id="heartbeatTable"></tbody>
         </table>
+        <div class="form-inline" style="display: table; margin: 20px auto 0 auto"><div class="form-group"><label style="margin-right: 5px" for="count">Anzahl: </label><input id="count" class="form-control" style="margin-right: 5px" type="number"></div><div class="form-group"><label for="start" style="margin-right: 5px">Beginn: </label><input id="start" class="form-control" style="margin-right: 5px" type="number"></div><button onclick="create()" type="button" class="btn btn-primary">Erzeugen</button></div>
     </form>
 </div>
 </body>
