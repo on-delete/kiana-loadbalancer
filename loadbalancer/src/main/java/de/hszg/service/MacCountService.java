@@ -31,25 +31,15 @@ public class MacCountService {
     @Path("/getMacCountForAP")
     @Consumes("application/json")
     public Response getMacCountForAP(MultipleAPRequest multipleAPRequest){
-        boolean gceFound = false;
-        String response = "";
-        try{
-            while(!gceFound) {
-                HeartbeatModel heartbeat = sharedMemory.getGCEWithLeastLoad();
-                if (Schedule.checkGCEStatus(heartbeat)) {
-                    multipleAPRequest.setGceCount(sharedMemory.getAllHeartbeats().size());
+        HeartbeatModel heartbeat = sharedMemory.getGCEWithLeastLoad();
 
-                    response = Schedule.startAggregateJob(multipleAPRequest, heartbeat.getIpAddress());
-                    gceFound = true;
-                }
-                else{
-                    sharedMemory.deleteHeartbeat(heartbeat);
-                }
-            }
+        multipleAPRequest.setGceCount(sharedMemory.getAllHeartbeats().size());
+
+        try {
+            String response = Schedule.startAggregateJob(multipleAPRequest, heartbeat.getIpAddress());
 
             return Response.ok().entity(response).build();
-        }
-        catch (IndexOutOfBoundsException |IOException e){
+        } catch (IndexOutOfBoundsException |IOException e){
             /*TODO
             In dem Fall wurde keine GCE aufgezeichnet, starten einer GCE?
              */
