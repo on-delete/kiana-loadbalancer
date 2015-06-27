@@ -15,7 +15,7 @@
             <cron>
                 <name>TestJob</name>
                 <job-name>TestJob</job-name>
-                <cron-expression>0/5 * * * * ? *</cron-expression>
+                <cron-expression>0/30 * * * * ? *</cron-expression>
             </cron>
         </trigger>
     </schedule>
