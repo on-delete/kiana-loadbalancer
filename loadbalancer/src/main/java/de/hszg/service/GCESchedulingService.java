@@ -5,6 +5,7 @@ import de.hszg.model.scheduling.JobList;
 import de.hszg.model.scheduling.JobScheduleModel;
 import de.hszg.service.heartbeat.HeartbeatModel;
 import de.hszg.service.heartbeat.SharedMemory;
+import de.hszg.service.util.JobScheduleThread;
 import de.hszg.service.util.Schedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,30 +43,16 @@ public class GCESchedulingService {
     @Path("/scheduleJobList")
     @Consumes("application/json")
     public Response scheduleJob(JobList jobList, @Context HttpServletRequest httpRequest){
-        boolean gceFound = false;
-        try {
-            String requestIpAddress = httpRequest.getRemoteAddr();
+        String requestIpAddress = httpRequest.getRemoteAddr();
 
-            for(Job job: jobList.getJobList()){
-                gceFound = false;
-                while(!gceFound) {
-                    HeartbeatModel heartbeat = sharedMemory.getGCEWithLeastLoad();
-                    if (Schedule.checkGCEStatus(heartbeat)) {
-                        JobScheduleModel jobScheduleModel = new JobScheduleModel(job, requestIpAddress);
+        for(Job job: jobList.getJobList()){
+            HeartbeatModel heartbeat = sharedMemory.getGCEWithLeastLoad();
 
-                        Schedule.startJobComputing(jobScheduleModel, heartbeat.getIpAddress());
-                        gceFound = true;
-                    }
-                    else{
-                        sharedMemory.deleteHeartbeat(heartbeat);
-                    }
-                }
-            }
-            return Response.ok().build();
+            JobScheduleModel jobScheduleModel = new JobScheduleModel(job, requestIpAddress);
+
+            JobScheduleThread jobScheduleThread = new JobScheduleThread(jobScheduleModel, heartbeat.getIpAddress());
+            jobScheduleThread.start();
         }
-        catch (IOException e){
-            e.printStackTrace();
-            return Response.serverError().build();
-        }
+        return Response.ok().build();
     }
 }
