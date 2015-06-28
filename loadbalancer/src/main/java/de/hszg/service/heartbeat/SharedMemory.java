@@ -24,7 +24,8 @@ public class SharedMemory {
 
     public void updateMemory(Heartbeat heartbeat){
         long systemTime = System.currentTimeMillis();
-        HeartbeatModel heartbeatModel = new HeartbeatModel(heartbeat.getIpAddress(), heartbeat.getLoad(), heartbeat.getNumberJobs(), systemTime);
+        //HeartbeatModel heartbeatModel = new HeartbeatModel(heartbeat.getIpAddress(), heartbeat.getLoad(), heartbeat.getNumberJobs(), systemTime);
+        HeartbeatModel heartbeatModel = new HeartbeatModel(heartbeat.getIpAddress(), heartbeat.getLoad(), 0, systemTime);
 
         if(memory.containsKey(heartbeat.getIpAddress())) {
             memory.replace(heartbeat.getIpAddress(), heartbeatModel);
@@ -67,5 +68,10 @@ public class SharedMemory {
         finally {
             writeLock.unlock();
         }
+    }
+
+    public void increaseNumberJobs(HeartbeatModel heartbeat){
+        heartbeat.setNumberJobs(heartbeat.getNumberJobs()+1);
+        memory.replace(heartbeat.getIpAddress(), heartbeat);
     }
 }

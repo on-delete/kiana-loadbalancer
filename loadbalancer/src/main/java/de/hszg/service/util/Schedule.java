@@ -72,25 +72,6 @@ public class Schedule {
         return null;
     }
 
-    public static void startJobComputing(JobScheduleModel jobScheduleModel, String ipAddress) throws IOException{
-        try {
-            StringEntity input = new StringEntity(jobScheduleModel.toString());
-            input.setContentType("application/json");
-
-            RequestConfig config = RequestConfig.custom()
-                    .setSocketTimeout(60000).build();
-
-            CloseableHttpClient httpclient =  HttpClientBuilder.create().setDefaultRequestConfig(config).build();
-            HttpPost httpPost = new HttpPost("http://"+ ipAddress +":8080/GCEComputeMacCountService/computeMacCount");
-            httpPost.setEntity(input);
-            httpclient.execute(httpPost);
-            httpclient.close();
-        }
-        catch (Exception e){
-            throw new IOException();
-        }
-    }
-
     public static boolean checkGCEStatus(HeartbeatModel heartbeatModel){
         GoogleComputeEngineFactory googleComputeEngineFactory = new GoogleComputeEngineFactory();
 
@@ -126,47 +107,5 @@ public class Schedule {
         }
         else
             return null;
-    }
-
-    public static String extractIpAddress(String url){
-        String[] splittedUrl = url.split("://");
-
-        String servletPath = splittedUrl[1];
-        String[] splittedServletPath = servletPath.split("/");
-
-        return splittedServletPath[0];
-    }
-
-    private JsonNode readStringAsJson(String jsonString) {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = null;
-
-        try {
-            rootNode = mapper.readTree(jsonString);
-        } catch (IOException e) {
-        }
-
-        return rootNode;
-    }
-
-    /**
-     * Converts a input stream to a string.
-     *
-     * @param inputStreamReader a input stream
-     * @return string from input stream
-     * @throws IOException
-     */
-    private static String readInputStreamAsString(InputStream inputStreamReader)
-            throws IOException {
-        BufferedInputStream bis = new BufferedInputStream(inputStreamReader);
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        int result = bis.read();
-        while (result != -1) {
-            byte b = (byte) result;
-            buf.write(b);
-            result = bis.read();
-        }
-
-        return buf.toString();
     }
 }

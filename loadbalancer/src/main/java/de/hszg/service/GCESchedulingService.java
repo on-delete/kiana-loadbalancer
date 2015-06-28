@@ -52,6 +52,7 @@ public class GCESchedulingService {
 
             JobScheduleThread jobScheduleThread = new JobScheduleThread(jobScheduleModel, heartbeat.getIpAddress());
             jobScheduleThread.start();
+            sharedMemory.increaseNumberJobs(heartbeat);
         }
         return Response.ok().build();
     }

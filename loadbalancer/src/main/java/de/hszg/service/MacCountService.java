@@ -36,6 +36,7 @@ public class MacCountService {
         multipleAPRequest.setGceCount(sharedMemory.getAllHeartbeats().size());
 
         try {
+            sharedMemory.increaseNumberJobs(heartbeat);
             String response = Schedule.startAggregateJob(multipleAPRequest, heartbeat.getIpAddress());
 
             try{
@@ -43,14 +44,9 @@ public class MacCountService {
                 return Response.ok().entity(response).build();
             }
             catch (NumberFormatException e){
-                //e.printStackTrace();
                 return Response.serverError().build();
             }
         } catch (IndexOutOfBoundsException |IOException e){
-            /*TODO
-            In dem Fall wurde keine GCE aufgezeichnet, starten einer GCE?
-             */
-            //e.printStackTrace();
             return Response.serverError().build();
         }
     }
